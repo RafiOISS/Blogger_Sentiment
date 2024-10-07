@@ -4,13 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blogger Sentiment</title>
+    <title>Document</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 h-screen flex flex-col">
-
+<body class="flex-1 flex justify-between pt-20 space-x-4">
     <!-- Navbar -->
     <nav class="bg-white w-full fixed top-0 left-0 shadow-md py-4 px-6 flex justify-between items-center z-50">
         <div class="flex items-center space-x-4">
@@ -41,32 +40,64 @@
     </nav>
 
     <!-- Main Body -->
-    <div class="flex-1 flex justify-between pt-20 space-x-4">
-
-        <!-- Sidebar Column (1st Column) -->
-        <div class="w-1/6 bg-white shadow-md rounded-lg h-[calc(100vh-5rem)] flex flex-col justify-between items-center py-8">
-            <!-- Sidebar Links -->
-            <ul class="flex flex-col space-y-6 items-center w-full">
+    <div class="flex-1 flex justify-between space-x-4">
+        <!-- Navigation Rail Column (1st Column) -->
+        <div class="w-20 bg-white shadow-md h-[calc(100vh-5rem)] flex flex-col justify-between items-center py-8">
+            <!-- Navigation Rail Links -->
+            <ul class="space-y-6 flex flex-col items-center w-full">
                 <!-- Home Link with Icon -->
-                <li><a href="#" class="block text-lg font-semibold text-blue-500">Home</a></li>
+                <li class="flex flex-col items-center">
+                    <a href="#" class="block text-blue-500">
+                        <!-- Home Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 3.293l6 6V16a2 2 0 01-2 2H6a2 2 0 01-2-2v-6.707l6-6z" />
+                        </svg>
+                    </a>
+                    <span class="text-xs mt-1">Home</span>
+                </li>
+
                 <!-- Account Link with Icon -->
-                <li><a href="#" class="block text-lg font-semibold">Account</a></li>
+                <li class="flex flex-col items-center">
+                    <a href="#" class="block text-gray-500">
+                        <!-- Account Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 4a4 4 0 110 8 4 4 0 010-8zM3 14a7 7 0 0114 0H3z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    <span class="text-xs mt-1">Account</span>
+                </li>
+
                 <!-- Settings Link with Icon -->
-                <li><a href="#" class="block text-lg font-semibold">Settings</a></li>
+                <li class="flex flex-col items-center">
+                    <a href="#" class="block text-gray-500">
+                        <!-- Settings Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M11.3 1.046c.36-.023.7.29.7.668v2.277a5.038 5.038 0 011.766.73l1.61-1.011a.665.665 0 01.923.248l1.12 1.939a.665.665 0 01-.248.922l-1.118.699a5.035 5.035 0 010 1.46l1.118.7a.665.665 0 01.248.922l-1.12 1.938a.665.665 0 01-.923.248l-1.61-1.01a5.037 5.037 0 01-1.766.73v2.277c0 .378-.34.692-.7.668A10 10 0 119.527 1.046h1.772zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    <span class="text-xs mt-1">Settings</span>
+                </li>
             </ul>
 
-            <!-- Horizontal Line -->
-            <!-- <hr class="w-4/5 border-t border-gray-300 my-6"> -->
-
             <!-- Logout Link at the Bottom -->
-            <div>
-                <a href="#" class="block text-lg font-semibold">Logout</a>
+            <div class="flex flex-col items-center">
+                <a href="#" class="block text-gray-500">
+                    <!-- Logout Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M3 5a2 2 0 012-2h6a2 2 0 012 2v2a1 1 0 01-2 0V5H5v10h6v-2a1 1 0 112 0v2a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm12 5a1 1 0 00-1-1H7a1 1 0 100 2h7a1 1 0 001-1z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </a>
+                <span class="text-xs mt-1">Logout</span>
             </div>
         </div>
 
-
         <!-- Posts Section (2nd Column) -->
-        <div class="w-3/6 flex flex-col justify-between">
+        <div class="w-4/6 flex flex-col justify-between">
             <!-- Scrollable Posts Section -->
             <div class="overflow-y-auto space-y-6 h-[calc(100vh-10rem)]">
                 {% for i in range(3) %}
@@ -134,7 +165,7 @@
                 <div class="bg-blue-500 text-white p-3 rounded-lg self-end">I have a question about the posts.</div>
                 <div class="bg-gray-200 p-3 rounded-lg">Sure, go ahead!</div>
 
-                
+
                 <!-- Bot Message -->
                 <div class="flex items-start space-x-2">
                     <!-- Bot Image -->
@@ -157,7 +188,8 @@
                         <p class="font-semibold text-sm text-right">User</p>
                         <p class="text-xs text-gray-500 text-right">dd/mm/yy | hh:mm AM/PM</p>
                         <div class="bg-blue-500 text-white p-3 rounded-lg max-w-xs">
-                            <p>I have a question about the posts. I have a question about the posts. I have a question about the posts.</p>
+                            <p>I have a question about the posts. I have a question about the posts. I have a question
+                                about the posts.</p>
                         </div>
                     </div>
                     <!-- User Image -->
@@ -189,8 +221,8 @@
         </div>
 
     </div>
-
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
 </body>
 
 </html>

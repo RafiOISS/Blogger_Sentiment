@@ -50,32 +50,56 @@ socketio = SocketIO(app)
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(500), nullable=False)
+    sender = db.Column(db.String(50), nullable=False)
     timestamp = db.Column(db.DateTime, default=lambda: datetime.now())
 
     def to_dict(self):
         return {
             'id': self.id,
             'content': self.content,
+            'sender': self.sender,
             'timestamp': self.timestamp.isoformat()
         }
 
 @app.route('/')
 def index():
-    return render_template('chat2_index.html')
+    # return render_template('chat2_index.html')
+    # return render_template('temp_index.html')
+    return render_template('navrail.html')
 
 @app.route('/messages')
 def get_messages():
     messages = Message.query.order_by(Message.timestamp).all()
+    print(messages)
     return jsonify([message.to_dict() for message in messages])
+
+# @socketio.on('send_message')
+# def handle_message(data):
+#     message_content = data.get('message', '').strip()
+#     if message_content:  # Only process if the message is not empty
+#         message = Message(content=message_content)
+#         db.session.add(message)
+#         db.session.commit()
+#         emit('receive_message', message.to_dict(), broadcast=True)
 
 @socketio.on('send_message')
 def handle_message(data):
     message_content = data.get('message', '').strip()
-    if message_content:  # Only process if the message is not empty
-        message = Message(content=message_content)
-        db.session.add(message)
+    # If the user sends a message, process and save it
+    if message_content:  
+        user_message = Message(content=message_content, sender='user')
+        db.session.add(user_message)
         db.session.commit()
-        emit('receive_message', message.to_dict(), broadcast=True)
+        # Broadcast user message
+        emit('receive_message', user_message.to_dict(), broadcast=True)
+
+        # After the user message, send a bot response
+        bot_message_content = "This is a fixed bot response."  # Fixed bot response text
+        bot_message = Message(content=bot_message_content, sender='bot')
+        db.session.add(bot_message)
+        db.session.commit()
+        # Broadcast bot message
+        emit('receive_message', bot_message.to_dict(), broadcast=True)
 
 if __name__ == '__main__':
     with app.app_context():
