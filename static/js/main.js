@@ -24,7 +24,7 @@ const messageInput = document.getElementById('message-input');
 // Function to add user or bot message to the chat UI
 function addMessageToChat(message) {
     console.log('Received message:', message);
-    
+
     const isUser = message.sender === 'user'; // Check if the message is from the user or the bot
     const messageContainer = document.createElement('div');
     // messageContainer.classList.add('flex', 'items-start', 'space-x-2', isUser ? 'justify-end' : ''); // Adjust based on sender
@@ -47,7 +47,11 @@ function addMessageToChat(message) {
 
     // Message HTML
     messageContainer.innerHTML = `
-        ${isUser ? '' : `<div class="w-10 h-10 bg-gray-300 rounded-full"></div>`}
+        ${isUser ? '' : `  <img
+    src="https://docs.material-tailwind.com/img/face-2.jpg"
+    alt="avatar"
+    class="relative inline-block h-12 w-12 !rounded-full  object-cover object-center"
+  />`}
         <div>
             <p class="font-semibold text-sm ${isUser ? 'text-right' : ''}">${isUser ? 'User' : 'Bot'}</p>
             <p class="text-xs text-gray-500 ${isUser ? 'text-right' : ''}">${timestamp}</p>
@@ -55,7 +59,12 @@ function addMessageToChat(message) {
                 <p>${message.content}</p>
             </div>
         </div>
-        ${isUser ? `<div class="w-10 h-10 bg-gray-300 rounded-full"></div>` : ''}
+        ${isUser ? `  <img
+    src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
+    alt="avatar"
+    class="relative inline-block h-12 w-12 !rounded-full  object-cover object-center"
+  />` : ''}
+
     `;
 
     // Append the message container to the chat messages

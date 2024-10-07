@@ -4,21 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Blogger Sentiment</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="flex-1 flex justify-between pt-20 space-x-4">
+<body class="bg-gray-100 h-screen flex flex-col">
     <!-- Navbar -->
     <nav class="bg-white w-full fixed top-0 left-0 shadow-md py-4 px-6 flex justify-between items-center z-50">
         <div class="flex items-center space-x-4">
             <button>
                 <!-- Slide Drawer Icon -->
-                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
+
             </button>
             <!-- Website Logo/Name -->
             <div class="text-xl font-bold text-blue-500">Blogger Sentiment</div>
@@ -40,7 +42,8 @@
     </nav>
 
     <!-- Main Body -->
-    <div class="flex-1 flex justify-between space-x-4">
+    <div class="flex-1 flex justify-between pt-20 space-x-4">
+
         <!-- Navigation Rail Column (1st Column) -->
         <div class="w-20 bg-white shadow-md h-[calc(100vh-5rem)] flex flex-col justify-between items-center py-8">
             <!-- Navigation Rail Links -->
@@ -49,9 +52,12 @@
                 <li class="flex flex-col items-center">
                     <a href="#" class="block text-blue-500">
                         <!-- Home Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M10 3.293l6 6V16a2 2 0 01-2 2H6a2 2 0 01-2-2v-6.707l6-6z" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                         </svg>
+
                     </a>
                     <span class="text-xs mt-1">Home</span>
                 </li>
@@ -60,10 +66,12 @@
                 <li class="flex flex-col items-center">
                     <a href="#" class="block text-gray-500">
                         <!-- Account Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 4a4 4 0 110 8 4 4 0 010-8zM3 14a7 7 0 0114 0H3z"
-                                clip-rule="evenodd" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                         </svg>
+
                     </a>
                     <span class="text-xs mt-1">Account</span>
                 </li>
@@ -72,11 +80,14 @@
                 <li class="flex flex-col items-center">
                     <a href="#" class="block text-gray-500">
                         <!-- Settings Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M11.3 1.046c.36-.023.7.29.7.668v2.277a5.038 5.038 0 011.766.73l1.61-1.011a.665.665 0 01.923.248l1.12 1.939a.665.665 0 01-.248.922l-1.118.699a5.035 5.035 0 010 1.46l1.118.7a.665.665 0 01.248.922l-1.12 1.938a.665.665 0 01-.923.248l-1.61-1.01a5.037 5.037 0 01-1.766.73v2.277c0 .378-.34.692-.7.668A10 10 0 119.527 1.046h1.772zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                                clip-rule="evenodd" />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         </svg>
+
                     </a>
                     <span class="text-xs mt-1">Settings</span>
                 </li>
@@ -86,11 +97,12 @@
             <div class="flex flex-col items-center">
                 <a href="#" class="block text-gray-500">
                     <!-- Logout Icon -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M3 5a2 2 0 012-2h6a2 2 0 012 2v2a1 1 0 01-2 0V5H5v10h6v-2a1 1 0 112 0v2a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm12 5a1 1 0 00-1-1H7a1 1 0 100 2h7a1 1 0 001-1z"
-                            clip-rule="evenodd" />
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
                     </svg>
+
                 </a>
                 <span class="text-xs mt-1">Logout</span>
             </div>
@@ -115,7 +127,9 @@
                             </div>
                         </div>
                         <!-- temp div for Sentiment Graph -->
-                        <div class="w-32 h-16 bg-gray-300">Sentiment Graph</div>
+                        <!-- <div class="w-32 h-16 rounded bg-gray-300">Sentiment Graph</div> -->
+                        <div class="w-32 h-16 bg-gray-300">{{ plot_html | safe }}</div>
+                        
                     </div>
 
                     <!-- Post Content -->
@@ -193,13 +207,20 @@
                         </div>
                     </div>
                     <!-- User Image -->
-                    <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+                    <!-- <div class="w-10 h-10 bg-gray-300 rounded-full"></div> -->
+                    <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80" alt="avatar"
+                        class="relative inline-block h-12 w-12 !rounded-full  object-cover object-center" />
                 </div>
 
                 <!-- Bot Message -->
                 <div class="flex items-start space-x-2">
                     <!-- Bot Image -->
-                    <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+                    <!-- <div class="w-10 h-10 bg-gray-300 rounded-full"></div> -->
+                    <img
+                    src="https://docs.material-tailwind.com/img/face-2.jpg"
+                    alt="avatar"
+                    class="relative inline-block h-12 w-12 !rounded-full  object-cover object-center"
+                  />
                     <!-- Message Content -->
                     <div>
                         <p class="font-semibold text-sm">Bot</p>
