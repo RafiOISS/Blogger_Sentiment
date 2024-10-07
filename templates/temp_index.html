@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blogger Sentiment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 h-screen flex flex-col">
+
+    <!-- Navbar -->
+    <nav class="bg-white w-full fixed top-0 left-0 shadow-md py-4 px-6 flex justify-between items-center z-50">
+        <div class="flex items-center space-x-4">
+            <button>
+                <!-- Slide Drawer Icon -->
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <!-- Website Logo/Name -->
+            <div class="text-xl font-bold text-blue-500">Blogger Sentiment</div>
+
+        </div>
+
+        <!-- User image and name -->
+        <div class="flex space-x-4">
+            <div class="flex items-center space-x-2">
+                <!-- temp div for image -->
+                <span class="font-semibold">User</span>
+                <div class="w-10 h-10 rounded-full bg-gray-300"></div>
+
+            </div>
+
+            <button class="bg-blue-500 text-white px-4 py-2 rounded">Login</button>
+        </div>
+
+    </nav>
+
+    <!-- Main Body -->
+    <div class="flex-1 flex justify-between pt-20 space-x-4">
+
+        <!-- Sidebar Column (1st Column) -->
+        <div
+            class="w-1/6 bg-white shadow-md rounded-lg h-[calc(100vh-5rem)] flex flex-col justify-between items-center py-8">
+            <!-- Sidebar Links -->
+            <ul class="flex flex-col space-y-6 items-center w-full">
+                <!-- Home Link with Icon -->
+                <li><a href="#" class="block text-lg font-semibold text-blue-500">Home</a></li>
+                <!-- Account Link with Icon -->
+                <li><a href="#" class="block text-lg font-semibold">Account</a></li>
+                <!-- Settings Link with Icon -->
+                <li><a href="#" class="block text-lg font-semibold">Settings</a></li>
+            </ul>
+
+            <!-- Horizontal Line -->
+            <!-- <hr class="w-4/5 border-t border-gray-300 my-6"> -->
+
+            <!-- Logout Link at the Bottom -->
+            <div>
+                <a href="#" class="block text-lg font-semibold">Logout</a>
+            </div>
+        </div>
+
+
+        <!-- Posts Section (2nd Column) -->
+        <div class="w-3/6 flex flex-col justify-between">
+            <!-- Scrollable Posts Section -->
+            <div class="overflow-y-auto space-y-6 h-[calc(100vh-10rem)]">
+                {% for i in range(3) %}
+                <!-- Individual Post -->
+                <div class="bg-white shadow-md rounded-lg p-4 space-y-4">
+                    <!-- Post Header (User Info + Date + Image) -->
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-2">
+                            <!-- temp div for image -->
+                            <div class="w-8 h-8 rounded-full bg-gray-300"></div>
+                            <div>
+                                <p class="font-semibold">User</p>
+                                <p class="text-sm text-gray-500">dd/mm/yy</p>
+                                <p class="text-sm text-gray-500">hh:mm AM/PM</p>
+                            </div>
+                        </div>
+                        <!-- temp div for Sentiment Graph -->
+                        <div class="w-32 h-16 bg-gray-300">Sentiment Graph</div>
+                    </div>
+
+                    <!-- Post Content -->
+                    <div>
+                        <!-- Post Title -->
+                        <p class="text-lg font-semibold">Post Title</p>
+                        <!-- Post Caption -->
+                        <p class="text-gray-600 italic">This is a short caption introducing the post...</p>
+                        <!-- Post Image -->
+                        <div class="w-full h-56 bg-gray-300 rounded-lg mt-2"> <!-- Temp image --> </div>
+                        <!-- Post Description -->
+                        <p class="text-gray-700 mt-4">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non dolor nec ligula
+                            tincidunt sodales sit amet id orci.
+                            Mauris vitae nunc sapien. Etiam tincidunt sapien ac orci ultrices, ac fringilla ligula
+                            tristique. Curabitur vehicula, lacus
+                            non aliquam tincidunt, justo magna ultrices enim, id aliquet lorem eros ac nunc.
+                        </p>
+                    </div>
+
+                    <!-- Post Footer (Share + Listen) -->
+                    <div class="flex justify-between items-center">
+                        <button class="text-blue-500">Share</button>
+                        <button class="text-blue-500">Listen</button>
+                    </div>
+                </div>
+
+                {% endfor %}
+            </div>
+
+            <!-- Post Form (Fixed at Bottom of Posts Section) -->
+            <div class="bg-white py-4 px-6 shadow-lg">
+                <form class="flex space-x-4">
+                    <input type="text" placeholder="Write a post"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none">
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Post</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Chat Column (3rd Column) -->
+        <div class="w-2/6 bg-white shadow-md rounded-lg p-4 flex flex-col justify-between h-[calc(100vh-5rem)]">
+            <!-- Scrollable Chat History -->
+            <div class="space-y-4 overflow-y-auto">
+                <!-- Readymade questions -->
+                <div class="bg-gray-200 p-3 rounded-lg">Hello! How can I help you today?</div>
+                <div class="bg-blue-500 text-white p-3 rounded-lg self-end">I have a question about the posts.</div>
+                <div class="bg-gray-200 p-3 rounded-lg">Sure, go ahead!</div>
+
+                
+                <!-- Bot Message -->
+                <div class="flex items-start space-x-2">
+                    <!-- Bot Image -->
+                    <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+                    <!-- Message Content -->
+                    <div>
+                        <p class="font-semibold text-sm">Bot</p>
+                        <p class="text-xs text-gray-500">dd/mm/yy | hh:mm AM/PM</p>
+                        <div class="bg-gray-200 p-3 rounded-lg max-w-xs">
+                            <p>Hello! How can I help you today?</p>
+                        </div>
+                    </div>
+                </div>
+
+                {% for i in range(3) %}
+                <!-- User Message -->
+                <div class="flex items-start space-x-2 justify-end">
+                    <!-- Message Content -->
+                    <div>
+                        <p class="font-semibold text-sm text-right">User</p>
+                        <p class="text-xs text-gray-500 text-right">dd/mm/yy | hh:mm AM/PM</p>
+                        <div class="bg-blue-500 text-white p-3 rounded-lg max-w-xs">
+                            <p>I have a question about the posts. I have a question about the posts. I have a question about the posts.</p>
+                        </div>
+                    </div>
+                    <!-- User Image -->
+                    <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+                </div>
+
+                <!-- Bot Message -->
+                <div class="flex items-start space-x-2">
+                    <!-- Bot Image -->
+                    <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+                    <!-- Message Content -->
+                    <div>
+                        <p class="font-semibold text-sm">Bot</p>
+                        <p class="text-xs text-gray-500">dd/mm/yy | hh:mm AM/PM</p>
+                        <div class="bg-gray-200 p-3 rounded-lg max-w-xs">
+                            <p>Sure, go ahead!</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Chat Form (Fixed at Bottom of Chat Column) -->
+            <form class="mt-4 flex space-x-2">
+                <input type="text" placeholder="Type a message..."
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Send</button>
+            </form>
+        </div>
+
+    </div>
+</body>
+
+</html>
