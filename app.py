@@ -1,3 +1,5 @@
+# https://heroicons.com/outline
+
 # Create a virtual environment named venv
 #   python -m venv venv
 
@@ -13,6 +15,9 @@
 # pip freeze > requirements.txt
 # pip freeze
 # pip install -r requirements.txt
+
+# npx tailwindcss -i ./static/css/tailwind.css -o ./static/css/output.css --watch
+# ngrok http 5000
 
 
 
@@ -67,37 +72,35 @@ class Message(db.Model):
             'timestamp': self.timestamp.isoformat()
         }
 
-import plotly.graph_objects as go
-import plotly.io as pio
+# # Create the figure
+# fig = go.Figure(data=go.Scatterpolar(
+#     r=[0, 5, 2, 4, 3],
+#     theta=['Happy', 'Sad', 'Angry', 'Surprised', 'Disappointed'],
+#     fill='toself'
+# ))
 
-# Create the figure
-fig = go.Figure(data=go.Scatterpolar(
-    r=[0, 5, 2, 4, 3],
-    theta=['Happy', 'Sad', 'Angry', 'Surprised', 'Disappointed'],
-    fill='toself'
-))
+# # Update the layout to remove background colors and margins
+# fig.update_layout(
+#     polar=dict(
+#         radialaxis=dict(visible=False),  # Hide radial axis
+#     ),
+#     showlegend=False,
+#     plot_bgcolor='rgba(0,0,0,0)',  # Transparent plot background
+#     paper_bgcolor='rgba(0,0,0,0)',  # Transparent page background
+#     margin=dict(l=20, r=20, t=20, b=20),  # Remove all margins
+#     autosize=True,  # Ensure no extra space
+# )
 
-# Update the layout to remove background colors and margins
-fig.update_layout(
-    polar=dict(
-        radialaxis=dict(visible=False),  # Hide radial axis
-    ),
-    showlegend=False,
-    plot_bgcolor='rgba(0,0,0,0)',  # Transparent plot background
-    paper_bgcolor='rgba(0,0,0,0)',  # Transparent page background
-    margin=dict(l=20, r=20, t=20, b=20),  # Remove all margins
-    autosize=True,  # Ensure no extra space
-)
-
-# Generate the HTML of the figure
-plot_html = pio.to_html(fig, full_html=False, config={'displayModeBar': False})
+# # Generate the HTML of the figure
+# plot_html = pio.to_html(fig, full_html=False, config={'displayModeBar': False})
 
 
 @app.route('/')
 def index():
     # return render_template('chat2_index.html')
     # return render_template('temp_index.html')
-    return render_template('navrail.html', plot_html=plot_html)
+    # return render_template('navrail.html', plot_html=plot_html)
+    return render_template('navrail.html')
 
 @app.route('/messages')
 def get_messages():
