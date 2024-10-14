@@ -5,8 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blogger Sentiment</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='dist/css/output.css')}}" />
+    <!-- Google font -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- web socket -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <!-- Tailwind Material UI -->
+    <link rel="stylesheet" href="https://unpkg.com/@material-tailwind/html@latest/styles/material-tailwind.css" />
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- chart cdn -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -65,7 +71,7 @@
     </nav>
 
     <!-- Main Body -->
-    <div class="flex-1 flex justify-between space-x-4 overflow-y-hidden">
+    <div class="flex-1 flex justify-start space-x-4 overflow-y-hidden">
 
         <!-- Navigation Rail Column (1st Column) -->
         <!-- <div class="w-20 bg-white shadow-md h-[calc(100vh-5rem)] flex flex-col justify-between items-center py-8"> -->
@@ -360,6 +366,7 @@
         </div>
 
     </div>
+
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <!-- from cdn -->
     <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"></script>

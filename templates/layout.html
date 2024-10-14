@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Upload</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .file-drop-zone {
+            border: 2px dashed #4A5568; /* gray-600 */
+        }
+        .file-drop-zone.dragging {
+            border-color: #38B2AC; /* teal-400 */
+            background-color: #2D3748; /* gray-800 */
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white">
+
+    <!-- Main container -->
+    <div class="max-w-lg mx-auto mt-10 p-6 bg-gray-800 rounded-lg shadow-lg">
+
+        <!-- Image Upload Area -->
+        <div id="drop-area" class="file-drop-zone rounded-lg p-6 text-center flex flex-col items-center justify-center transition-all duration-200 relative">
+            <span class="text-gray-300" id="upload-instruction">Drag, Drop, Paste, or Upload media</span>
+            <input id="fileElem" type="file" class="hidden" accept="image/*" onchange="handleFiles(this.files)">
+            <button id="upload-button" class="mt-3 px-4 py-2 bg-teal-500 text-white rounded-lg">Upload Image</button>
+        </div>
+
+        <!-- Image Info Section (Hidden by default) -->
+        <div id="image-info" class="mt-4 hidden">
+            <div class="flex justify-between items-center bg-gray-700 p-3 rounded-lg">
+                <span id="image-name" class="text-gray-300"></span>
+                <button id="remove-button" class="bg-red-500 text-white px-4 py-2 rounded-lg" onclick="removeImage()">Remove</button>
+            </div>
+        </div>
+
+        <!-- Image Preview Area -->
+        <div id="image-preview" class="mt-4"></div>
+
+    </div>
+
+    <script>
+        // Elements
+        let dropArea = document.getElementById('drop-area');
+        let fileInput = document.getElementById('fileElem');
+        let uploadButton = document.getElementById('upload-button');
+        let previewContainer = document.getElementById('image-preview');
+        let imageInfo = document.getElementById('image-info');
+        let imageNameElement = document.getElementById('image-name');
+        let uploadInstruction = document.getElementById('upload-instruction');
+
+        // Handle file drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false)
+        });
+
+        function preventDefaults (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.add('dragging'), false)
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.remove('dragging'), false)
+        });
+
+        // Handle dropped files
+        dropArea.addEventListener('drop', (e) => {
+            let dt = e.dataTransfer;
+            let files = dt.files;
+            handleFiles(files);
+        });
+
+        // Handle file input click
+        uploadButton.addEventListener('click', () => fileInput.click());
+
+        // Handle file paste
+        document.addEventListener('paste', (e) => {
+            let items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].kind === 'file' && items[i].type.startsWith('image/')) {
+                    let file = items[i].getAsFile();
+                    handleFiles([file]);
+                }
+            }
+        });
+
+        // Function to handle file selection and display
+        function handleFiles(files) {
+            if (files.length) {
+                const file = files[0];
+                if (file && file.type.startsWith('image/')) {
+                    let reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onloadend = function () {
+                        // Display image preview
+                        previewContainer.innerHTML = ""; // Clear previous preview
+                        let img = document.createElement('img');
+                        img.src = reader.result;
+                        img.classList.add('w-full', 'mt-3', 'rounded-lg');
+                        previewContainer.appendChild(img);
+
+                        // Display file name and show remove button
+                        imageNameElement.textContent = file.name;
+                        imageInfo.classList.remove('hidden');  // Show image info section
+                        uploadInstruction.classList.add('hidden'); // Hide upload instruction
+                    }
+                }
+            }
+        }
+
+        // Function to remove image
+        function removeImage() {
+            previewContainer.innerHTML = ""; // Clear image preview
+            imageInfo.classList.add('hidden');  // Hide image info section
+            uploadInstruction.classList.remove('hidden');  // Show upload instruction
+            fileInput.value = "";  // Reset file input
+        }
+    </script>
+
+</body>
+</html>

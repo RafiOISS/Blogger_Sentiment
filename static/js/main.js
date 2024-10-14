@@ -23,7 +23,7 @@ const messageInput = document.getElementById('message-input');
 
 // Function to add user or bot message to the chat UI
 function addMessageToChat(message) {
-    console.log('Received message:', message);
+    //console.log('Received message:', message);
 
     const isUser = message.sender === 'user'; // Check if the message is from the user or the bot
     const messageContainer = document.createElement('div');
@@ -47,11 +47,13 @@ function addMessageToChat(message) {
 
     // Message HTML
     messageContainer.innerHTML = `
-        ${isUser ? '' : `  <img
-    src="https://docs.material-tailwind.com/img/face-2.jpg"
-    alt="avatar"
-    class="relative inline-block h-9 w-9 !rounded-full  object-cover object-center"
-  />`}
+        ${isUser ? '' : `  <div class="w-9 h-9 bg-pink-100 rounded-full flex items-center justify-center border">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
+</svg>
+
+          </div>
+`}
         <div>
             <p class="font-semibold text-sm ${isUser ? 'text-right' : ''}">${isUser ? 'User' : 'Bot'}</p>
             <p class="text-xs text-gray-500 ${isUser ? 'text-right' : ''}">${timestamp}</p>
@@ -76,7 +78,7 @@ function addMessageToChat(message) {
 fetch('/messages')
     .then(response => response.json())
     .then(messages => {
-        console.log(messages);
+        //console.log(messages);
         // chatMessages.innerHTML = '';
         messages.forEach(addMessageToChat);
     });
@@ -218,3 +220,13 @@ const radarChart2 = new Chart(radarCtx2, {
     }
   }
 });
+
+
+
+
+
+
+// Upload Image
+
+
+

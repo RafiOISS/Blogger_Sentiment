@@ -1,4 +1,8 @@
 # https://heroicons.com/outline
+# https://www.chartjs.org/docs/latest/
+# https://tailwindcss.com
+# https://www.material-tailwind.com/docs/html/installation
+
 
 # Create a virtual environment named venv
 #   python -m venv venv
@@ -16,7 +20,9 @@
 # pip freeze
 # pip install -r requirements.txt
 
-# npx tailwindcss -i ./static/css/tailwind.css -o ./static/css/output.css --watch
+# npx tailwindcss -i ./src/input.css -o ./src/output.css --watch
+# npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch
+
 # ngrok http 5000
 
 
@@ -99,8 +105,8 @@ class Message(db.Model):
 def index():
     # return render_template('chat2_index.html')
     # return render_template('temp_index.html')
-    # return render_template('navrail.html', plot_html=plot_html)
-    return render_template('navrail.html')
+    # return render_template('navrail.html')
+    return render_template('button.html')
 
 @app.route('/messages')
 def get_messages():

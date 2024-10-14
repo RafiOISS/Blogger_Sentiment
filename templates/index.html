@@ -4,97 +4,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blogger Sentiment</title>
+    <title>Interactive Container</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 h-screen flex flex-col">
+<body class="flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-4xl mx-auto p-4">
+        <button id="openBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mb-4">
+            Open
+        </button>
 
-    <!-- Navbar -->
-    <nav class="bg-white w-full fixed top-0 left-0 shadow-md py-4 px-6 flex justify-between items-center z-50">
-        <div class="flex items-center space-x-4">
-            <!-- Toggle Button for Sidebar -->
-            <button id="sidebarToggle" aria-expanded="false" aria-controls="slideDrawer">
-                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-            </button>
-            <!-- User image and name -->
-            <div class="flex items-center space-x-2">
-                <!--temp div for image -->
-                <div class="w-10 h-10 rounded-full bg-gray-300"></div>
-                <span class="font-semibold">User</span>
-            </div>
-        </div>
-        <button class="bg-blue-500 text-white px-4 py-2 rounded">Login</button>
-    </nav>
+        <div id="parentDiv" class="flex w-full h-64 bg-gray-200 rounded-lg overflow-hidden">
+            <!-- <div id="newDiv" class="bg-green-200 p-4 transition-all duration-300 ease-in-out flex-grow"> -->
+            <div id="newDiv" class="bg-green-200 p-4 flex-grow">
 
-    <!-- Main Body -->
-    <div class="flex-1 flex justify-center py-4 pt-20">
-        <div class="w-full lg:w-3/5 space-y-6 flex flex-col justify-between">
-            <!-- Posts Section (Scrollable) -->
-            <div class="overflow-y-auto space-y-6 h-full">
-                {% for i in range(6) %}
-                <!-- Individual Post -->
-                <div class="bg-white shadow-md rounded-lg p-4 space-y-4">
-                    <!-- Post Header (User Info + Date + Image) -->
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center space-x-2">
-                            <!--temp div for image -->
-                            <div class="w-8 h-8 rounded-full bg-gray-300"></div>
-                            <div>
-                                <p class="font-semibold">User</p>
-                                <p class="text-sm text-gray-500">dd/mm/yy | hh:mm</p>
-                            </div>
-                        </div>
-                        <!-- temp div for Sentiment Graph -->
-                        <div class="w-16 h-16 bg-gray-300">Graph Image</div>
-                    </div>
-                    <!-- Post Content -->
-                    <div>
-                        <p class="text-lg font-semibold">Post Title</p>
-                        <p class="text-gray-700">Lorem Ipsum is simply dummy text of the printing and typesetting
-                            industry...</p>
-                    </div>
-                    <!-- Post Footer (Share + Listen) -->
-                    <div class="flex justify-between items-center">
-                        <button class="text-blue-500">Share</button>
-                        <button class="text-blue-500">Listen</button>
-                    </div>
-                </div>
-                <!-- Repeat above block for more posts -->
-                {% endfor %}
-
+                This div stays visible at all times
             </div>
 
-            <!-- Fixed Form Section -->
-            <div class="fixed bottom-0 w-full bg-white py-4 px-6 shadow-lg lg:w-3/5">
-                <form class="flex space-x-4">
-                    <input type="text" placeholder="What is on your mind?"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none">
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Post</button>
-                </form>
+            <div id="container" class="hidden bg-white p-4 transition-all duration-300 ease-in-out w-1/2">
+                <button id="closeBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded">
+                    Close
+                </button>
+                <p class="mt-4">This is the old div content</p>
             </div>
         </div>
     </div>
 
-    <!-- Chat Button -->
-    <button
-        class="fixed bottom-6 right-6 bg-blue-500 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg hidden md:flex">
-        Chat
-    </button>
+    <script>
+        const openBtn = document.getElementById('openBtn');
+        const closeBtn = document.getElementById('closeBtn');
+        const container = document.getElementById('container');
+        const newDiv = document.getElementById('newDiv');
 
-    <!-- Slide Drawer -->
-    <div id="slideDrawer"
-        class="fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 ease-in-out bg-white shadow-lg z-50 hidden md:block">
-        <ul class="space-y-4 p-4">
-            <li><a href="#" class="block text-lg font-semibold">Account</a></li>
-            <li><a href="#" class="block text-lg font-semibold">Settings</a></li>
-        </ul>
-    </div>
+        openBtn.addEventListener('click', () => {
+            container.classList.remove('hidden');
+            //openBtn.classList.add('hidden');
+            newDiv.classList.remove('flex-grow');
+            newDiv.classList.add('w-1/2');
+        });
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+        closeBtn.addEventListener('click', () => {
+            container.classList.add('hidden');
+            openBtn.classList.remove('hidden');
+            newDiv.classList.add('flex-grow');
+            newDiv.classList.remove('w-1/2');
+        });
+    </script>
 </body>
 
 </html>

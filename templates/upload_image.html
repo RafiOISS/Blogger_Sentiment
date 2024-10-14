@@ -179,12 +179,12 @@
 
 
                 <div
-                    class="w-full max-w-screen-xl h-full space-y-6 bg-white mt-20 py-6 px-10 mx-auto shadow-lg rounded-lg overflow-y-auto ">
+                    class="w-full max-w-screen-xl h-full space-y-6 bg-white mt-20 py-6 px-10 mx-auto shadow-lg rounded-lg overflow-y-auto">
                     <!-- Post Submission Form -->
-                    <form enctype="multipart/form-data" class="space-y-6 ">
+                    <form enctype="multipart/form-data" class="space-y-6">
                         <!-- Header -->
-                        <div class="mt-4 mb-9 ">
-                            <h1 class="text-4xl ">Create Post</h1>
+                        <div class="mt-4 mb-9 text-gray-500">
+                            <h1 class="text-2xl font-bold">Create Post</h1>
                         </div>
 
                         <!-- Title Input -->
@@ -231,7 +231,7 @@
                                     class="block pointer-events-none absolute cursor-text bg-white px-1 left-2.5 -top-2 text-gray-500 text-xs transition-all transform origin-left 
                                     peer-focus:text-blue-500 peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs
                                     peer-placeholder-shown:top-4 peer-placeholder-shown:left-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:scale-100">
-                                    Caption (optional)
+                                    Caption
                                 </label>
                             </div>
                         </div>
@@ -240,32 +240,28 @@
 
                         <!-- Image Input -->
                         <div class="w-full hidden">
-                            <label class="text-gray-700" for="image">Upload Image (optional)</label>
+                            <label class="text-gray-700" for="image">Upload Image</label>
                             <input type="file" name="image" id="image"
                                 class="mt-2 block w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-white focus:ring-1 focus:ring-blue-500">
                         </div>
 
+
+
+
+
+
                         <!-- Image Upload Input (with Drag and Drop) -->
                         <div class="w-full max-w-3xl min-w-[200px] mt-6">
-                            <!-- <label class="text-gray-700">Upload Image (optional)</label> -->
+                            <label class="text-gray-700">Upload Image</label>
                             <div id="drop-area"
                                 class="file-drop-zone w-full mt-2 bg-gray-100 border-2 border-dashed border-gray-400 rounded-lg p-6 text-center relative flex flex-col items-center justify-center transition-all duration-200">
-                                <span id="upload-instruction" class="text-gray-500">Drag & Drop, Paste, or Upload
+                                <span id="upload-instruction" class="text-gray-500">Drag, Drop, Paste, or Upload
                                     media</span>
                                 <input id="fileElem" type="file" name="image" class="hidden" accept="image/*"
                                     onchange="handleFiles(this.files)">
                                 <button id="upload-button" type="button"
-                                    class="mt-3 px-6 py-3 bg-blue-500 text-white rounded-3xl hover:bg-blue-600 flex items-center space-x-2">
-
-                                    <span>Upload Image</span>
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="size-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
-                                    </svg>
-
-                                </button>
+                                    class="mt-3 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Upload
+                                    Image</button>
                             </div>
 
                             <!-- Image Info Section (Hidden by default) -->
@@ -287,25 +283,16 @@
 
 
 
+
+
+
+
+
                         <!-- Description Input -->
-                        <div class="w-full hidden">
+                        <div class="w-full">
                             <label class="text-gray-700" for="description">Description</label>
                             <textarea name="description" id="description" placeholder="Enter a detailed description"
                                 class="mt-2 w-full h-32 px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:outline-none"></textarea>
-                        </div>
-
-                        <div class="w-full max-w-3xl min-w-[200px]">
-                            <div class="relative">
-
-                                <textarea name="description" id="description" placeholder=" " rows="4"
-                                    class="peer w-full max-h-full bg-transparent text-gray-700 text-sm border border-gray-500 rounded-md px-3.5 py-4 focus:outline-blue-500 focus:border-blue-500 overflow-auto"></textarea>
-
-                                <label for="description"
-                                    class="block pointer-events-none absolute cursor-text bg-white px-1 left-2.5 -top-2 text-gray-500 text-xs transition-all transform origin-left 
-                                    peer-focus:text-blue-500 peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs
-                                    peer-placeholder-shown:top-4 peer-placeholder-shown:left-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:scale-100">
-                                    Description</label>
-                            </div>
                         </div>
 
                         <!-- Submit and Cancel Buttons -->
@@ -315,7 +302,7 @@
                                 Cancel
                             </button>
                             <button type="submit"
-                                class="bg-blue-700 text-white px-6 py-3 rounded-3xl hover:bg-blue-800 transition-all">
+                                class="bg-blue-500 text-white px-6 py-3 rounded-3xl hover:bg-blue-600 transition-all">
                                 Submit
                             </button>
                         </div>
@@ -533,20 +520,113 @@
         </div>
 
     </div>
-    
 
-    <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script defer src="{{ url_for('static', filename='js/upload_image.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/textarea_grow.js') }}"></script>
 
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <!-- from material tailwind cdn -->
     <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"></script>
     <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/collapse.js"></script>
     <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/dialog.js"></script>
 
+
     <!-- <script src="../node_modules/@material-tailwind/html@latest/scripts/ripple.js"></script>
     <script src="../node_modules/@material-tailwind/html@latest/scripts/collapse.js"></script>
     <script src="../node_modules/@material-tailwind/html@latest/scripts/dialog.js"></script> -->
+
+
+
+
+
+
+    <script>
+        // Elements
+        let dropArea = document.getElementById('drop-area');
+        let fileInput = document.getElementById('fileElem');
+        let uploadButton = document.getElementById('upload-button');
+        let previewContainer = document.getElementById('image-preview');
+        let imageInfo = document.getElementById('image-info');
+        let imageNameElement = document.getElementById('image-name');
+        let uploadInstruction = document.getElementById('upload-instruction');
+
+        // Handle file drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false)
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.add('dragging'), false)
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropArea.classList.remove('dragging'), false)
+        });
+
+        // Handle dropped files
+        dropArea.addEventListener('drop', (e) => {
+            let dt = e.dataTransfer;
+            let files = dt.files;
+            handleFiles(files);
+        });
+
+        // Handle file input click
+        uploadButton.addEventListener('click', () => fileInput.click());
+
+        // Handle file paste
+        document.addEventListener('paste', (e) => {
+            let items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].kind === 'file' && items[i].type.startsWith('image/')) {
+                    let file = items[i].getAsFile();
+                    handleFiles([file]);
+                }
+            }
+        });
+
+        // Function to handle file selection and display
+        function handleFiles(files) {
+            if (files.length) {
+                const file = files[0];
+                if (file && file.type.startsWith('image/')) {
+                    let reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onloadend = function () {
+                        // Display image preview
+                        previewContainer.innerHTML = ""; // Clear previous preview
+                        let img = document.createElement('img');
+                        img.src = reader.result;
+                        img.classList.add('w-full', 'mt-3', 'rounded-lg');
+                        previewContainer.appendChild(img);
+
+                        // Display file name and show remove button
+                        imageNameElement.textContent = file.name;
+                        imageInfo.classList.remove('hidden');  // Show image info section
+                        uploadInstruction.classList.add('hidden'); // Hide upload instruction
+                    }
+                }
+            }
+        }
+
+        // Function to remove image
+        function removeImage() {
+            previewContainer.innerHTML = ""; // Clear image preview
+            imageInfo.classList.add('hidden');  // Hide image info section
+            uploadInstruction.classList.remove('hidden');  // Show upload instruction
+            fileInput.value = "";  // Reset file input
+        }
+    </script>
+
+
+
+
+
+
+
 
 </body>
 
