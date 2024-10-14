@@ -22,6 +22,7 @@
 
 # npx tailwindcss -i ./src/input.css -o ./src/output.css --watch
 # npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch
+# npm run build-css
 
 # ngrok http 5000
 
