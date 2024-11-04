@@ -103,11 +103,11 @@ class Message(db.Model):
 
 
 @app.route('/')
-def index():
+def home():
     # return render_template('chat2_index.html')
     # return render_template('temp_index.html')
     # return render_template('navrail.html')
-    return render_template('button.html')
+    return render_template('home.html')
 
 @app.route('/messages')
 def get_messages():
@@ -142,6 +142,14 @@ def handle_message(data):
         db.session.commit()
         # Broadcast bot message
         emit('receive_message', bot_message.to_dict(), broadcast=True)
+
+@app.route('/account')
+def account():
+    return render_template('account.html')
+
+@app.route('/settings')
+def settings():
+    return render_template('settings.html')
 
 if __name__ == '__main__':
     with app.app_context():

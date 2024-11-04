@@ -2,552 +2,572 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Sentiment</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog Sentiment</title>
 
-    <!-- Google font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
-    <!-- web socket -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+  <!-- favicon -->
+  <link rel="icon" type="image/png" href="{{url_for('static', filename='images/blog.png')}}" />
 
-    <!-- chart cdn -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet" />
+  <!-- web socket -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 
-    <!-- <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
-                    },
-                },
-            },
-        }
-    </script> -->
+  <!-- chart cdn -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet">
-
+  <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet" />
 </head>
 
-<body class="bg-gray-100 h-screen flex flex-col font-sans">
-    <!-- Navbar -->
-    <nav class="bg-white w-full fixed top-0 left-0 shadow-md py-2 px-6 flex justify-between items-center z-50">
+<body class="bg-gray-100 h-screen flex flex-col font-poppins">
+  <!-- Navbar -->
+  <nav class="bg-white w-full fixed top-0 left-0 shadow-md flex justify-between items-center z-50">
+    <div class="flex items-center space-x-4 px-5">
+      <button
+        class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all text-gray-500 hover:bg-gray-100 focus:bg-blue-100 active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+        type="button">
+        <!-- Slide Drawer Icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+        </svg>
+      </button>
+      <!-- Website Logo/Name -->
+      <!-- <div class="text-xl font-bold text-blue-500">BlogSen</div> -->
+      <div
+        class="py-2 text-2xl font-bold font-pacifico bg-gradient-to-r from-indigo-500 via-rose-300 to-amber-300 bg-clip-text text-transparent">
+        BlogSen
+      </div>
+
+      <!-- drop-shadow-[0_0.1px_0.1px_rgba(0,0,0,0.8)] -->
+    </div>
+
+    <!-- User image and name -->
+    <div class="py-2 px-6">
+      <div class="flex space-x-4">
         <div class="flex items-center space-x-2">
-            <button
-                class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all text-gray-500 hover:bg-gray-100 focus:bg-blue-100 active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                type="button">
-                <!-- Slide Drawer Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
-
-            </button>
-            <!-- Website Logo/Name -->
-            <div class="text-xl font-bold text-blue-500">BlogSen</div>
-
+          <!-- temp div for image -->
+          <span class="font-semibold">User</span>
+          <!-- <div class="w-10 h-10 rounded-full bg-gray-300"></div> -->
+          <img
+            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
+            alt="avatar" class="relative inline-block h-10 w-10 !rounded-full object-cover object-center" />
         </div>
 
-        <!-- User image and name -->
-        <div class="flex space-x-4">
-            <div class="flex items-center space-x-2">
-                <!-- temp div for image -->
-                <span class="font-semibold">User</span>
-                <!-- <div class="w-10 h-10 rounded-full bg-gray-300"></div> -->
-                <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
-                    alt="avatar" class="relative inline-block h-10 w-10 !rounded-full  object-cover object-center" />
+        <!-- <button class="bg-blue-500 text-white px-4 py-2 rounded">Login</button> -->
+        <button data-ripple-light="true"
+          class="rounded-full bg-blue-500 py-3 px-6 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-blue-600 focus:shadow-none active:bg-blue-600 hover:bg-blue-600 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
+          type="button">
+          Sign in
+        </button>
+      </div>
+    </div>
+  </nav>
 
+  <!-- Main Body -->
+  <div class="flex-1 flex justify-start space-x-4 overflow-y-hidden">
+    <!-- Navigation Rail Column (1st Column) -->
+    <!-- <div class="w-20 bg-white shadow-md h-[calc(100vh-5rem)] flex flex-col justify-between items-center py-8"> -->
+    <div class="w-20 bg-white shadow-md h-full flex flex-col justify-between items-center pt-28 py-8">
+      <!-- Navigation Rail Links -->
+      <ul class="space-y-6 flex flex-col items-center w-full text-gray-500">
+        <!-- Home Link with Icon -->
+        <li class="flex flex-col items-center cursor-pointer group ">
+          <button
+            class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all text-gray-500 group-hover:bg-gray-100 focus:bg-blue-100 group-active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+            type="button">
+            <a href="#" class="block text-gray-500 group-active:text-blue-500">
+              <!-- Home Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+              </svg>
+            </a>
+          </button>
+          <span
+            class="text-xs mt-1 font-medium group-hover:font-bold group-active:font-bold group-active:text-blue-500">Home</span>
+        </li>
+
+        <!-- Account Link with Icon -->
+        <li class="flex flex-col items-center cursor-pointer group">
+          <button
+            class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all text-gray-500 group-hover:bg-gray-100 focus:bg-blue-100 group-active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+            type="button">
+            <a href="#" class="block text-gray-500 group-active:text-blue-500">
+              <!-- Account Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+              </svg>
+            </a>
+          </button>
+          <span
+            class="text-xs mt-1 font-medium group-hover:font-bold group-active:font-bold group-active:text-blue-500">Account</span>
+        </li>
+
+        <!-- Settings Link with Icon -->
+        <li class="flex flex-col items-center cursor-pointer group">
+          <button
+            class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all text-gray-500 group-hover:bg-gray-100 focus:bg-blue-100 group-active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+            type="button">
+            <a href="#" class="block text-gray-500 group-active:text-blue-500">
+              <!-- Settings Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              </svg>
+            </a>
+          </button>
+          <span
+            class="text-xs mt-1 font-medium group-hover:font-bold group-active:font-bold group-active:text-blue-500">Settings</span>
+        </li>
+      </ul>
+
+      <!-- Logout Link at the Bottom -->
+      <div class="flex flex-col items-center cursor-pointer group text-gray-500">
+        <button
+          class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all text-gray-500 group-hover:bg-gray-100 focus:bg-blue-100 group-active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+          type="button">
+          <a href="#" class="block text-gray-500 group-active:text-blue-500">
+            <!-- Logout Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+            </svg>
+          </a>
+        </button>
+        <span
+          class="text-xs mt-1 font-medium group-hover:font-bold group-active:font-bold group-active:text-blue-500">Logout</span>
+      </div>
+    </div>
+
+    <div class="flex-1 flex justify-around space-x-4 overflow-y-hidden pr-4">
+      <!-- Posts Section (2nd Column) -->
+      <div class="w-4/6 max-w-screen-xl flex-grow flex flex-col justify-between">
+        <!-- Scrollable Posts Section -->
+        <!-- <div class="overflow-y-auto space-y-6 h-[calc(100vh-10rem)]"> -->
+
+        <div id="post-form"
+          class="w-full max-w-screen-xl h-full space-y-6 bg-white mt-20 py-6 px-10 mx-auto shadow-lg rounded-3xl overflow-y-auto hidden">
+          <!-- Post Submission Form -->
+          <form enctype="multipart/form-data" class="flex flex-col h-full space-y-6">
+            <div class="flex flex-col space-y-6 justify-center items-center">
+              <div class="w-full max-w-3xl min-w-[200px]">
+                <div>
+                  <button id="post-close-form" type="button" class="bg-white text-gray-500 px-2 py-2 rounded-full hover:bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Header -->
+                <div class="mt-4 mb-9">
+                  <h1 class="text-4xl text-gray-500">Create Post</h1>
+                </div>
+              </div>
+
+              <!-- Title Input -->
+              <!-- <div class="w-full ">
+                                <label class="text-gray-700" for="title">Post Title</label>
+                                <input type="text" name="title" id="title" placeholder="Post title"
+                                    class="mt-2 w-full px-6 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-3xl focus:ring-1 focus:ring-blue-500 focus:outline-none">
+                            </div> -->
+
+              <div class="w-full max-w-3xl min-w-[200px]">
+                <div class="relative">
+                  <input type="text" placeholder=" "
+                    class="peer w-full bg-transparent text-gray-700 text-sm border border-gray-500 rounded-md px-3.5 py-4 focus:outline-blue-500 focus:border-blue-500" />
+                  <label for="title"
+                    class="block pointer-events-none absolute cursor-text bg-white px-1 left-2.5 -top-2 text-gray-500 text-xs transition-all transform origin-left peer-focus:text-blue-500 peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-placeholder-shown:top-4 peer-placeholder-shown:left-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:scale-100">
+                    Title
+                  </label>
+                </div>
+              </div>
+
+              <!-- Post Title -->
+              <!-- <div class="mb-4 min-w-[200px] ">
+                                <label class="block font-medium text-gray-500">Post title</label>
+                                <input type="text"
+                                    class="mt-3 w-full p-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    placeholder="Post title">
+                            </div> -->
+
+              <!-- Caption Input -->
+              <!-- <div class="w-full ">
+                                <label class="text-gray-700" for="caption">Caption</label>
+                                <input type="text" name="caption" id="caption" placeholder="Enter caption"
+                                    class="mt-2 w-full px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:outline-none">
+                            </div> -->
+
+              <div class="w-full max-w-3xl min-w-[200px]">
+                <div class="relative">
+                  <input type="text" placeholder=" " name="caption" id="caption"
+                    class="peer w-full bg-transparent text-gray-700 text-sm border border-gray-500 rounded-md px-3.5 py-4 focus:outline-blue-500 focus:border-blue-500" />
+                  <label for="caption"
+                    class="block pointer-events-none absolute cursor-text bg-white px-1 left-2.5 -top-2 text-gray-500 text-xs transition-all transform origin-left peer-focus:text-blue-500 peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-placeholder-shown:top-4 peer-placeholder-shown:left-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:scale-100">
+                    Caption (optional)
+                  </label>
+                </div>
+              </div>
+
+              <!-- Image Input -->
+              <!-- <div class="w-full hidden">
+                                <label class="text-gray-700" for="image">Upload Image (optional)</label>
+                                <input type="file" name="image" id="image"
+                                    class="mt-2 block w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-white focus:ring-1 focus:ring-blue-500">
+                            </div> -->
+
+              <!-- Image Upload Input (with Drag and Drop) -->
+              <div class="w-full max-w-3xl min-w-[200px] mt-6">
+                <!-- <label class="text-gray-700">Upload Image (optional)</label> -->
+                <div id="drop-area"
+                  class="file-drop-zone w-full bg-gray-100 border-2 border-dashed border-gray-400 rounded-lg p-6 text-center relative flex flex-col items-center justify-center transition-all duration-200">
+                  <span id="upload-instruction" class="text-gray-500">Drag & Drop, Paste, or Upload media
+                    (optional)</span>
+                  <input id="fileElem" type="file" name="image" class="hidden" accept="image/*"
+                    onchange="handleFiles(this.files)" />
+                  <button id="upload-button" type="button"
+                    class="mt-3 px-6 py-3 bg-blue-100 text-gray-600 hover:text-gray-700 rounded-3xl hover:bg-blue-200 flex items-center space-x-2">
+                    <span>Upload Image</span>
+
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                      stroke="currentColor" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Image Info Section (Hidden by default) -->
+                <div id="image-info" class="bg-gray-100 border-2 border-dashed border-gray-400 rounded-lg hidden">
+                  <div class="flex justify-between items-center bg-gray-100 pl-3 pr-1 pt-1 rounded-lg">
+                    <span id="image-name"></span>
+                    <button id="remove-button"
+                      class="bg-transparent text-pink-600 px-2 py-2 rounded-full hover:bg-pink-100"
+                      onclick="removeImage()">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="size-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                      </svg>
+                    </button>
+                  </div>
+                  <!-- Image Preview Area -->
+                  <div id="image-preview" class="hidden"></div>
+                </div>
+
+                <!-- Image Preview Area -->
+                <!-- <div id="image-preview" class="hidden mt-4 bg-gray-100 border-2 border-dashed border-gray-400 rounded-lg"></div> -->
+              </div>
+
+              <!-- Description Input -->
+
+              <div class="w-full max-w-3xl min-w-[200px]">
+                <div class="relative">
+                  <textarea name="description" id="description" placeholder=" " rows="4"
+                    class="peer resize-none w-full min-h-24 max-h-full bg-transparent text-gray-700 text-sm border border-gray-500 rounded-md px-3.5 py-4 focus:outline-blue-500 focus:border-blue-500 overflow-hidden"></textarea>
+
+                  <label for="description"
+                    class="block pointer-events-none absolute cursor-text bg-white px-1 left-2.5 -top-2 text-gray-500 text-xs transition-all transform origin-left peer-focus:text-blue-500 peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-placeholder-shown:top-4 peer-placeholder-shown:left-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:scale-100">
+                    Description</label>
+                </div>
+              </div>
             </div>
 
-            <!-- <button class="bg-blue-500 text-white px-4 py-2 rounded">Login</button> -->
-            <button data-ripple-light="true"
-                class="rounded-full bg-blue-500 py-3 px-6 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-blue-600 focus:shadow-none active:bg-blue-600 hover:bg-blue-600 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
-                type="button">
-                Sign in
-            </button>
-        </div>
+            <!-- <div class="w-full max-w-3xl min-w-[200px] py-4 px-6"> -->
+            <!-- Submit and Cancel Buttons -->
 
-    </nav>
-
-    <!-- Main Body -->
-    <div class="flex-1 flex justify-start space-x-4 overflow-y-hidden">
-
-        <!-- Navigation Rail Column (1st Column) -->
-        <!-- <div class="w-20 bg-white shadow-md h-[calc(100vh-5rem)] flex flex-col justify-between items-center py-8"> -->
-        <div class="w-20 bg-white shadow-md h-full flex flex-col justify-between items-center pt-28 py-8 ">
-
-            <!-- Navigation Rail Links -->
-            <ul class="space-y-6 flex flex-col items-center w-full text-gray-500">
-                <!-- Home Link with Icon -->
-                <li class="flex flex-col items-center cursor-pointer group">
-
-                    <button
-                        class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all text-gray-500 group-hover:bg-gray-100 focus:bg-blue-100 group-active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                        type="button">
-
-                        <a href="#" class="block text-gray-500 group-active:text-blue-500">
-                            <!-- Home Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                            </svg>
-                        </a>
-                    </button>
-                    <span
-                        class="text-xs mt-1 font-medium group-hover:font-bold group-active:font-bold group-active:text-blue-500">Home</span>
-                </li>
-
-                <!-- Account Link with Icon -->
-                <li class="flex flex-col items-center cursor-pointer group">
-
-                    <button
-                        class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all text-gray-500 group-hover:bg-gray-100 focus:bg-blue-100 group-active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                        type="button">
-                        <a href="#" class="block text-gray-500 group-active:text-blue-500">
-                            <!-- Account Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                            </svg>
-
-                        </a>
-                    </button>
-                    <span
-                        class="text-xs mt-1 font-medium group-hover:font-bold group-active:font-bold group-active:text-blue-500">Account</span>
-                </li>
-
-                <!-- Settings Link with Icon -->
-                <li class="flex flex-col items-center cursor-pointer group">
-                    <button
-                        class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all text-gray-500 group-hover:bg-gray-100 focus:bg-blue-100 group-active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                        type="button">
-                        <a href="#" class="block text-gray-500 group-active:text-blue-500">
-                            <!-- Settings Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                            </svg>
-
-                        </a>
-                    </button>
-                    <span
-                        class="text-xs mt-1 font-medium group-hover:font-bold group-active:font-bold group-active:text-blue-500">Settings</span>
-                </li>
-            </ul>
-
-            <!-- Logout Link at the Bottom -->
-            <div class="flex flex-col items-center cursor-pointer group text-gray-500">
-                <button
-                    class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all text-gray-500 group-hover:bg-gray-100 focus:bg-blue-100 group-active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                    type="button">
-                    <a href="#" class="block text-gray-500 group-active:text-blue-500">
-                        <!-- Logout Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
-                        </svg>
-
-                    </a>
-                </button>
-                <span
-                    class="text-xs mt-1 font-medium group-hover:font-bold group-active:font-bold group-active:text-blue-500">Logout</span>
-            </div>
-        </div>
-
-
-        <div class="flex-1 flex justify-around space-x-4 overflow-y-hidden pr-4">
-
-            <!-- Posts Section (2nd Column) -->
-            <div class="w-4/6 max-w-screen-xl flex-grow flex flex-col justify-between">
-                <!-- Scrollable Posts Section -->
-                <!-- <div class="overflow-y-auto space-y-6 h-[calc(100vh-10rem)]"> -->
-
-
-
-
-
-                <div
-                    class="w-full max-w-screen-xl h-full space-y-6 bg-white mt-20 py-6 px-10 mx-auto shadow-lg rounded-lg overflow-y-auto ">
-                    <!-- Post Submission Form -->
-                    <form enctype="multipart/form-data" class="space-y-6 ">
-                        <!-- Header -->
-                        <div class="mt-4 mb-9 ">
-                            <h1 class="text-4xl ">Create Post</h1>
-                        </div>
-
-                        <!-- Title Input -->
-                        <div class="w-full hidden">
-                            <label class="text-gray-700" for="title">Post Title</label>
-                            <input type="text" name="title" id="title" placeholder="Post title"
-                                class="mt-2 w-full px-6 py-3 text-sm text-gray-700 bg-white border border-gray-300 rounded-3xl focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                        </div>
-
-
-                        <div class="w-full max-w-3xl min-w-[200px]">
-                            <div class="relative">
-                                <input type="text" placeholder=" "
-                                    class="peer w-full bg-transparent text-gray-700 text-sm border border-gray-500 rounded-md px-3.5 py-4 focus:outline-blue-500 focus:border-blue-500" />
-                                <label for="title"
-                                    class="block pointer-events-none absolute cursor-text bg-white px-1 left-2.5 -top-2 text-gray-500 text-xs transition-all transform origin-left 
-                                    peer-focus:text-blue-500 peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs
-                                    peer-placeholder-shown:top-4 peer-placeholder-shown:left-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:scale-100">
-                                    Title
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- Post Title -->
-                        <div class="mb-4 min-w-[200px] hidden">
-                            <label class="block font-medium text-gray-500">Post title</label>
-                            <input type="text"
-                                class="mt-3 w-full p-3 bg-gray-100 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                placeholder="Post title">
-                        </div>
-
-                        <!-- Caption Input -->
-                        <div class="w-full hidden">
-                            <label class="text-gray-700" for="caption">Caption</label>
-                            <input type="text" name="caption" id="caption" placeholder="Enter caption"
-                                class="mt-2 w-full px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:outline-none">
-                        </div>
-
-                        <div class="w-full max-w-3xl min-w-[200px]">
-                            <div class="relative">
-                                <input type="text" placeholder=" " name="caption" id="caption"
-                                    class="peer w-full bg-transparent text-gray-700 text-sm border border-gray-500 rounded-md px-3.5 py-4 focus:outline-blue-500 focus:border-blue-500" />
-                                <label for="caption"
-                                    class="block pointer-events-none absolute cursor-text bg-white px-1 left-2.5 -top-2 text-gray-500 text-xs transition-all transform origin-left 
-                                    peer-focus:text-blue-500 peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs
-                                    peer-placeholder-shown:top-4 peer-placeholder-shown:left-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:scale-100">
-                                    Caption (optional)
-                                </label>
-                            </div>
-                        </div>
-
-
-
-                        <!-- Image Input -->
-                        <div class="w-full hidden">
-                            <label class="text-gray-700" for="image">Upload Image (optional)</label>
-                            <input type="file" name="image" id="image"
-                                class="mt-2 block w-full text-sm text-gray-700 border border-gray-300 rounded-lg cursor-pointer bg-white focus:ring-1 focus:ring-blue-500">
-                        </div>
-
-                        <!-- Image Upload Input (with Drag and Drop) -->
-                        <div class="w-full max-w-3xl min-w-[200px] mt-6">
-                            <!-- <label class="text-gray-700">Upload Image (optional)</label> -->
-                            <div id="drop-area"
-                                class="file-drop-zone w-full mt-2 bg-gray-100 border-2 border-dashed border-gray-400 rounded-lg p-6 text-center relative flex flex-col items-center justify-center transition-all duration-200">
-                                <span id="upload-instruction" class="text-gray-500">Drag & Drop, Paste, or Upload
-                                    media</span>
-                                <input id="fileElem" type="file" name="image" class="hidden" accept="image/*"
-                                    onchange="handleFiles(this.files)">
-                                <button id="upload-button" type="button"
-                                    class="mt-3 px-6 py-3 bg-blue-500 text-white rounded-3xl hover:bg-blue-600 flex items-center space-x-2">
-
-                                    <span>Upload Image</span>
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                        stroke-width="1.5" stroke="currentColor" class="size-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
-                                    </svg>
-
-                                </button>
-                            </div>
-
-                            <!-- Image Info Section (Hidden by default) -->
-                            <div id="image-info" class="mt-4 hidden">
-                                <div class="flex justify-between items-center bg-gray-200 p-3 rounded-lg">
-                                    <span id="image-name" class="text-gray-700"></span>
-                                    <button id="remove-button"
-                                        class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                                        onclick="removeImage()">Remove</button>
-                                </div>
-                            </div>
-
-                            <!-- Image Preview Area -->
-                            <div id="image-preview" class="mt-4"></div>
-                        </div>
-
-
-
-
-
-
-                        <!-- Description Input -->
-                        <div class="w-full hidden">
-                            <label class="text-gray-700" for="description">Description</label>
-                            <textarea name="description" id="description" placeholder="Enter a detailed description"
-                                class="mt-2 w-full h-32 px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-500 focus:outline-none"></textarea>
-                        </div>
-
-                        <div class="w-full max-w-3xl min-w-[200px]">
-                            <div class="relative">
-
-                                <textarea name="description" id="description" placeholder=" " rows="4"
-                                    class="peer w-full max-h-full bg-transparent text-gray-700 text-sm border border-gray-500 rounded-md px-3.5 py-4 focus:outline-blue-500 focus:border-blue-500 overflow-auto"></textarea>
-
-                                <label for="description"
-                                    class="block pointer-events-none absolute cursor-text bg-white px-1 left-2.5 -top-2 text-gray-500 text-xs transition-all transform origin-left 
-                                    peer-focus:text-blue-500 peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs
-                                    peer-placeholder-shown:top-4 peer-placeholder-shown:left-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:scale-100">
-                                    Description</label>
-                            </div>
-                        </div>
-
-                        <!-- Submit and Cancel Buttons -->
-                        <div class="flex justify-end space-x-4">
-                            <button type="button"
+            <div class="flex justify-center space-x-4">
+              <!-- <button type="button"
                                 class="bg-gray-200 text-gray-700 px-6 py-3 rounded-3xl hover:bg-gray-300">
                                 Cancel
-                            </button>
-                            <button type="submit"
-                                class="bg-blue-700 text-white px-6 py-3 rounded-3xl hover:bg-blue-800 transition-all">
-                                Submit
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-
-
-
-
-
-
-                <div class="overflow-y-auto space-y-6 h-full pt-20 py-6 hidden">
-                    {% for i in range(3) %}
-                    <!-- Individual Post -->
-                    <div class="bg-white shadow-md rounded-3xl p-4 space-y-4">
-                        <div class="flex justify-between items-start">
-                            <!-- Div 1 (50% width) -->
-                            <div class="w-1/2 flex flex-col space-y-8">
-                                <!-- Div 1.1 -->
-                                <!-- Post Header (User Info + Date + Image) -->
-                                <div class="flex items-center space-x-2">
-                                    <!-- temp div for image -->
-                                    <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
-                                        alt="avatar"
-                                        class="relative inline-block h-9 w-9 !rounded-full object-cover object-center" />
-                                    <div>
-                                        <p class="font-semibold">User</p>
-                                        <p class="text-sm text-gray-500">dd/mm/yy, hh:mm AM/PM</p>
-                                    </div>
-                                </div>
-                                <!-- Div 1.2 -->
-                                <!-- Post Title & Caption -->
-                                <div>
-                                    <p class="text-lg font-semibold">Post Title</p>
-                                    <p class="text-gray-600 italic">This is a short caption introducing the post...</p>
-                                </div>
-                            </div>
-
-                            <!-- temp div for Sentiment Graph -->
-                            <!-- Div 2 (50% width) -->
-                            <div class="w-1/2 flex justify-end">
-                                <!-- Div 2.1 -->
-                                <!-- <div class="w-full h-32 rounded-3xl bg-gray-100 flex justify-end"> -->
-                                <div class="w-full h-32 rounded-3xl flex justify-end">
-                                    {% if i == 1 %}
-                                    <!-- {{ plot_html | safe }} -->
-                                    <!-- <div class="w-full h-full"> -->
-                                    <canvas class="w-full max-w-56" id="doughnutChart"></canvas>
-                                    <!-- </div> -->
-                                    <!-- Doughnut Chart -->
-                                    <!-- <canvas id="doughnutChart"></canvas> -->
-                                    {% else %}
-                                    <canvas class="w-full max-w-40" id="radarChart1"></canvas>
-                                    {% endif %}
-                                    <!-- <canvas id="radarChart2"></canvas> -->
-                                </div>
-                                <!-- <canvas id="radarChart"></canvas> -->
-                            </div>
-                        </div>
-
-                        <!-- Rest of the post content -->
-                        <!-- Post Image -->
-                        <div class="w-full h-56 bg-gray-100 rounded-3xl mt-2">
-                            <!-- Temp image -->
-                        </div>
-                        <!-- Post Description -->
-                        <p class="text-gray-700 mt-4">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus non dolor nec ligula
-                            tincidunt sodales sit amet id orci. Mauris vitae nunc sapien. Etiam tincidunt sapien ac orci
-                            ultrices, ac fringilla ligula
-                            tristique. Curabitur vehicula, lacus non aliquam tincidunt, justo magna ultrices enim, id
-                            aliquet lorem eros ac nunc.
-                        </p>
-
-                        <!-- Post Footer (Share + Listen) -->
-                        <div class="flex justify-start items-center space-x-4">
-                            <button
-                                class="rounded-full border border-transparent py-1 px-4 text-center text-sm transition-all text-blue-500 hover:bg-blue-100 focus:bg-blue-100 active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2"
-                                type="button">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
-                                </svg>
-                                Share
-                            </button>
-                            <button
-                                class="rounded-full border border-transparent py-1 px-4 text-center text-sm transition-all text-blue-500 hover:bg-blue-100 focus:bg-blue-100 active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2"
-                                type="button">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" />
-                                </svg>
-                                Listen
-                            </button>
-                        </div>
-                    </div>
-
-                    {% endfor %}
-                </div>
-
-                <!-- Post Form (Fixed at Bottom of Posts Section) -->
-                <div class="bg-white py-4 px-6 shadow-lg rounded-t-lg hidden">
-                    <form class="flex space-x-4 ">
-                        <!-- <input type="text" placeholder="Create a post"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:outline-none"> -->
-                        <!-- <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Post</button> -->
-                        <button
-                            class="w-full rounded-3xl bg-gray-100 py-3 px-6 border border-transparent text-gray-500 text-left transition-all focus:bg-gray-100 focus:shadow-none active:bg-gray-100 hover:bg-gray-100 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2 cursor-text"
-                            type="button">
-                            Create a post
-                        </button>
-
-                        <button data-ripple-light="true"
-                            class="rounded-full bg-blue-500 py-3 px-3 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-blue-600 focus:shadow-none active:bg-blue-600 hover:bg-blue-600 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
-                            type="submit">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-
-                            <!-- Post -->
-                        </button>
-                    </form>
-                </div>
+                            </button> -->
+              <button type="submit" data-ripple-light="true"
+                class="w-full max-w-3xl min-w-[200px] bg-blue-500 text-white px-6 py-3 rounded-3xl hover:bg-blue-600 transition-all mb-4">
+                Post
+              </button>
             </div>
-
-            <!-- Chat Column (3rd Column) -->
-            <div
-                class="w-2/6 bg-white shadow-md rounded-lg p-4 flex flex-col justify-between h-[calc(100vh-5rem)] mt-20 max-w-screen-md ">
-                <!-- <div class="w-2/6 bg-white shadow-md rounded-lg p-4 flex flex-col justify-between h-full mt-20"> -->
-                <!-- Scrollable Chat History -->
-                <div id="chat-messages" class="space-y-4 overflow-y-auto">
-                    <!-- Readymade questions -->
-                    <div class="bg-gray-200 p-3 rounded-3xl">Hello! How can I help you today?</div>
-                    <div class="bg-blue-500 text-white p-3 rounded-3xl self-end">I have a question about the posts.
-                    </div>
-                    <div class="bg-gray-200 p-3 rounded-3xl">Sure, go ahead!</div>
-
-
-                    <!-- Bot Message -->
-                    <div class="flex items-start space-x-2">
-                        <!-- Bot Image -->
-                        <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
-                        <!-- Message Content -->
-                        <div>
-                            <p class="font-semibold text-sm">Bot</p>
-                            <p class="text-xs text-gray-500">dd/mm/yy | hh:mm AM/PM</p>
-                            <div class="bg-gray-200 p-3 rounded-3xl max-w-xs">
-                                <p>Hello! How can I help you today?</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {% for i in range(1) %}
-                    <!-- User Message -->
-                    <div class="flex items-start space-x-2 justify-end">
-                        <!-- Message Content -->
-                        <div>
-                            <p class="font-semibold text-sm text-right">User</p>
-                            <p class="text-xs text-gray-500 text-right">dd/mm/yy | hh:mm AM/PM</p>
-                            <div class="bg-blue-500 text-white p-3 rounded-3xl max-w-xs">
-                                <p>I have a question about the posts. I have a question about the posts. I have a
-                                    question
-                                    about the posts.</p>
-                            </div>
-                        </div>
-                        <!-- User Image -->
-                        <!-- <div class="w-10 h-10 bg-gray-300 rounded-full"></div> -->
-                        <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
-                            alt="avatar"
-                            class="relative inline-block h-12 w-12 !rounded-full  object-cover object-center" />
-                    </div>
-
-                    <!-- Bot Message -->
-                    <div class="flex items-start space-x-2">
-                        <!-- Bot Image -->
-                        <!-- <div class="w-10 h-10 bg-gray-300 rounded-full"></div> -->
-                        <img src="https://docs.material-tailwind.com/img/face-2.jpg" alt="avatar"
-                            class="relative inline-block h-12 w-12 !rounded-full  object-cover object-center" />
-                        <!-- Message Content -->
-                        <div>
-                            <p class="font-semibold text-sm">Bot</p>
-                            <p class="text-xs text-gray-500">dd/mm/yy | hh:mm AM/PM</p>
-                            <div class="bg-gray-200 p-3 rounded-3xl max-w-xs">
-                                <p>Sure, go ahead!</p>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-
-                <!-- Chat Form (Fixed at Bottom of Chat Column) -->
-                <form id="message-form" class="mt-4 flex space-x-2 ">
-                    <input type="text" id="message-input" placeholder="Message with bot"
-                        class="w-full px-6 py-3 bg-gray-100 rounded-3xl focus:outline-none placeholder-gray-500">
-                    <!-- <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-full">Send</button> -->
-
-                    <button data-ripple-light="true"
-                        class="rounded-full bg-blue-500 py-3 px-3 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-blue-600 focus:shadow-none active:bg-blue-600 hover:bg-blue-600 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
-                        type="submit">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                            stroke="currentColor" class="size-6">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                        </svg>
-
-                        <!-- Send -->
-                    </button>
-                </form>
-            </div>
+            <!-- </div> -->
+          </form>
         </div>
 
+        <div id="post-dashboard" class="overflow-y-auto space-y-6 h-full pt-20 py-6 ">
+          {% for i in range(3) %}
+          <!-- Individual Post -->
+          <div class="bg-white shadow-md rounded-3xl p-4 space-y-4">
+            <div class="flex justify-between items-start">
+              <!-- Div 1 (50% width) -->
+              <div class="w-1/2 flex flex-col space-y-8">
+                <!-- Div 1.1 -->
+                <!-- Post Header (User Info + Date + Image) -->
+                <div class="flex items-center space-x-2">
+                  <!-- temp div for image -->
+                  <img
+                    src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
+                    alt="avatar" class="relative inline-block h-9 w-9 !rounded-full object-cover object-center" />
+                  <div>
+                    <p class="font-semibold">User</p>
+                    <p class="text-sm text-gray-500">dd/mm/yy, hh:mm AM/PM</p>
+                  </div>
+                </div>
+                <!-- Div 1.2 -->
+                <!-- Post Title & Caption -->
+                <div>
+                  <p class="text-lg font-semibold">Post Title</p>
+                  <p class="text-gray-600 italic">
+                    This is a short caption introducing the post...
+                  </p>
+                </div>
+              </div>
+
+              <!-- temp div for Sentiment Graph -->
+              <!-- Div 2 (50% width) -->
+              <div class="w-1/2 flex justify-end">
+                <!-- Div 2.1 -->
+                <!-- <div class="w-full h-32 rounded-3xl bg-gray-100 flex justify-end"> -->
+                <div class="w-full h-32 rounded-3xl flex justify-end">
+                  {% if i == 1 %}
+                  <!-- {{ plot_html | safe }} -->
+                  <!-- <div class="w-full h-full"> -->
+                  <canvas class="w-full max-w-56" id="doughnutChart"></canvas>
+                  <!-- </div> -->
+                  <!-- Doughnut Chart -->
+                  <!-- <canvas id="doughnutChart"></canvas> -->
+                  {% else %}
+                  <canvas class="w-full max-w-40" id="radarChart1"></canvas>
+                  {% endif %}
+                  <!-- <canvas id="radarChart2"></canvas> -->
+                </div>
+                <!-- <canvas id="radarChart"></canvas> -->
+              </div>
+            </div>
+
+            <!-- Rest of the post content -->
+            <!-- Post Image -->
+            <div class="w-full h-56 bg-gray-100 rounded-3xl mt-2">
+              <!-- Temp image -->
+            </div>
+            <!-- Post Description -->
+            <p class="text-gray-700 mt-4">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Phasellus non dolor nec ligula tincidunt sodales sit amet id
+              orci. Mauris vitae nunc sapien. Etiam tincidunt sapien ac orci
+              ultrices, ac fringilla ligula tristique. Curabitur vehicula,
+              lacus non aliquam tincidunt, justo magna ultrices enim, id
+              aliquet lorem eros ac nunc.
+            </p>
+
+            <!-- Post Footer (Share + Listen) -->
+            <div class="flex justify-start items-center space-x-4">
+              <button
+                class="rounded-full border border-transparent py-1 px-4 text-center text-sm transition-all text-blue-500 hover:bg-blue-100 focus:bg-blue-100 active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2"
+                type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-4">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+                </svg>
+                Share
+              </button>
+              <button
+                class="rounded-full border border-transparent py-1 px-4 text-center text-sm transition-all text-blue-500 hover:bg-blue-100 focus:bg-blue-100 active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2"
+                type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="size-4">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z" />
+                </svg>
+                Listen
+              </button>
+            </div>
+          </div>
+
+          {% endfor %}
+        </div>
+
+        <!-- Post Form (Fixed at Bottom of Posts Section) -->
+        <div id="post-dashboard-bottom" style="box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1)" class="bg-white py-4 px-6 shadow-lg rounded-t-lg z-30">
+          <div class="flex space-x-4">
+            <!-- <input type="text" placeholder="Create a post"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-3xl focus:outline-none"> -->
+            <!-- <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Post</button> -->
+            <button id="post-open-form"
+              class="w-full rounded-3xl bg-blue-100 py-3 px-6 border border-transparent text-gray-600 hover:text-gray-700 text-left transition-all focus:bg-blue-200 focus:shadow-none active:bg-blue-200 hover:bg-blue-200 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2 cursor-text"
+              type="button">
+              Create a post
+            </button>
+
+            <!-- <button data-ripple-light="true"
+              class="hidden rounded-full bg-blue-500 py-3 px-3 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-blue-600 focus:shadow-none active:bg-blue-600 hover:bg-blue-600 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"> -->
+              <!-- type="submit"> -->
+              <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m15 11.25-3-3m0 0-3 3m3-3v7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg> -->
+
+              <!-- Post -->
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Button -->
+      <button id="chat-open"
+        class="fixed bottom-16 right-6 bg-pink-200 hover:bg-pink-300 text-pink-600 hover:text-pink-700 w-12 h-12 rounded-full flex flex-col items-center justify-center drop-shadow-lg z-50">
+        <!-- Chat -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-12">
+          <!-- Command line symbols >_ with proper angular bracket -->
+          <path fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
+            d="M8 10l2.8 2L8 14 M12.5 14h3" />
+
+          <!-- Chat bubble outline -->
+          <path fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
+            d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 0 1-.923 1.785A5.969 5.969 0 0 0 6 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337Z" />
+        </svg>
+        <!-- <span class="text-xs">Chat</span> -->
+      </button>
+
+      <!-- Chat Column (3rd Column) -->
+      <div id="chat-col"
+        class="w-2/6 bg-white shadow-md rounded-lg flex flex-col justify-between h-[calc(100vh-5rem)] mt-20 max-w-screen-md hidden">
+        <!-- <div class="w-2/6 bg-white shadow-md rounded-lg p-4 flex flex-col justify-between h-full mt-20"> -->
+
+        <!-- Title Bar with Close Button -->
+        <div class="flex justify-between items-center shadow-md bg-blue-100 rounded-t-lg pl-4 z-30">
+          <p class="text-sm text-blue-900 font-semibold">Chat Bot</p>
+          <button id="chat-close" data-collapse-target="chat-column"
+            class="text-pink-800 bg-pink-200 hover:bg-pink-300 rounded-tr-lg w-10 h-6 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+              stroke="currentColor" class="size-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Scrollable Chat History -->
+        <div id="chat-messages" class="space-y-4 overflow-y-auto p-4">
+          <!-- Readymade questions -->
+          <div class="bg-gray-200 p-3 rounded-3xl">
+            Hello! How can I help you today?
+          </div>
+          <div class="bg-blue-500 text-white p-3 rounded-3xl self-end">
+            I have a question about the posts.
+          </div>
+          <div class="bg-gray-200 p-3 rounded-3xl">Sure, go ahead!</div>
+
+          <!-- Bot Message -->
+          <div class="flex items-start space-x-2">
+            <!-- Bot Image -->
+            <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+            <!-- Message Content -->
+            <div>
+              <p class="font-semibold text-sm">Bot</p>
+              <p class="text-xs text-gray-500">dd/mm/yy | hh:mm AM/PM</p>
+              <div class="bg-gray-200 p-3 rounded-3xl max-w-xs">
+                <p>Hello! How can I help you today?</p>
+              </div>
+            </div>
+          </div>
+
+          {% for i in range(1) %}
+          <!-- User Message -->
+          <div class="flex items-start space-x-2 justify-end">
+            <!-- Message Content -->
+            <div>
+              <p class="font-semibold text-sm text-right">User</p>
+              <p class="text-xs text-gray-500 text-right">
+                dd/mm/yy | hh:mm AM/PM
+              </p>
+              <div class="bg-blue-500 text-white p-3 rounded-3xl max-w-xs">
+                <p>
+                  I have a question about the posts. I have a question about
+                  the posts. I have a question about the posts.
+                </p>
+              </div>
+            </div>
+            <!-- User Image -->
+            <!-- <div class="w-10 h-10 bg-gray-300 rounded-full"></div> -->
+            <img
+              src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
+              alt="avatar" class="relative inline-block h-12 w-12 !rounded-full object-cover object-center" />
+          </div>
+
+          <!-- Bot Message -->
+          <div class="flex items-start space-x-2">
+            <!-- Bot Image -->
+            <!-- <div class="w-10 h-10 bg-gray-300 rounded-full"></div> -->
+            <img src="https://docs.material-tailwind.com/img/face-2.jpg" alt="avatar"
+              class="relative inline-block h-12 w-12 !rounded-full object-cover object-center" />
+            <!-- Message Content -->
+            <div>
+              <p class="font-semibold text-sm">Bot</p>
+              <p class="text-xs text-gray-500">dd/mm/yy | hh:mm AM/PM</p>
+              <div class="bg-gray-200 p-3 rounded-3xl max-w-xs">
+                <p>Sure, go ahead!</p>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Chat Form (Fixed at Bottom of Chat Column) -->
+        <form id="message-form" style="box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1)" class="flex space-x-2 p-4 z-30">
+          <input type="text" id="message-input" placeholder="Message with bot"
+            class="w-full px-6 py-3 bg-gray-100 rounded-3xl focus:outline-none placeholder-gray-500" />
+          <!-- <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-full">Send</button> -->
+
+          <button data-ripple-light="true"
+            class="rounded-full bg-blue-500 py-3 px-3 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-blue-600 focus:shadow-none active:bg-blue-600 hover:bg-blue-600 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
+            type="submit">
+            <?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+            <svg version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 32 32"
+              xml:space="preserve">
+              <style type="text/css">
+                .puchipuchi_een {
+                  fill: #e8eaed;
+                }
+              </style>
+              <path class="puchipuchi_een"
+                d="M30.291,2.87l-9.581,25.26c-0.39,1.029-1.346,1.234-2.123,0.456c0,0-6.036-6.036-6.586-6.586
+                            s-0.359-1.631,0.425-2.403l13.316-13.11c0.784-0.772,0.711-0.856-0.163-0.187L10.588,17.784c-0.873,0.669-2.224,0.58-3.002-0.198
+                            l-4.172-4.172c-0.778-0.778-0.573-1.733,0.456-2.124l25.26-9.581C30.159,1.319,30.681,1.841,30.291,2.87z M8.707,20.121
+                            C8.318,19.732,8,19.864,8,20.414V25c0,0.55,0.386,0.768,0.857,0.485l2.401-1.441c0.472-0.283,0.539-0.833,0.15-1.222L8.707,20.121z" />
+            </svg>
+
+            <!-- Send -->
+          </button>
+        </form>
+      </div>
     </div>
-    
+  </div>
 
-    <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script defer src="{{ url_for('static', filename='js/upload_image.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/textarea_grow.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/upload_image.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/textarea_grow.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/button_collapse.js') }}"></script>
 
-    <!-- from material tailwind cdn -->
-    <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"></script>
-    <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/collapse.js"></script>
-    <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/dialog.js"></script>
+  <!-- from material tailwind cdn -->
+  <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"></script>
+  <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/collapse.js"></script>
+  <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/dialog.js"></script>
 
-    <!-- <script src="../node_modules/@material-tailwind/html@latest/scripts/ripple.js"></script>
+  <!-- <script src="../node_modules/@material-tailwind/html@latest/scripts/ripple.js"></script>
     <script src="../node_modules/@material-tailwind/html@latest/scripts/collapse.js"></script>
     <script src="../node_modules/@material-tailwind/html@latest/scripts/dialog.js"></script> -->
-
 </body>
 
 </html>

@@ -1,126 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Upload</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        .file-drop-zone {
-            border: 2px dashed #4A5568; /* gray-600 */
-        }
-        .file-drop-zone.dragging {
-            border-color: #38B2AC; /* teal-400 */
-            background-color: #2D3748; /* gray-800 */
-        }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog Sentiment{% block title %}{% endblock %}</title>
+
+    <!-- favicon -->
+    <link rel="icon" type="image/png" href="{{url_for('static', filename='images/blog.png')}}" />
+
+    <!-- Google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet" />
+    <!-- web socket -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+
+    <!-- chart cdn -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet" />
 </head>
-<body class="bg-gray-900 text-white">
 
-    <!-- Main container -->
-    <div class="max-w-lg mx-auto mt-10 p-6 bg-gray-800 rounded-lg shadow-lg">
+<body class="bg-gray-100 h-screen flex flex-col font-poppins">
+    <!-- Navbar -->
+    <nav class="bg-white w-full fixed top-0 left-0 shadow-md flex justify-between items-center z-50">
+        <div class="flex items-center space-x-4 px-5">
+            <button
+                class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all text-gray-500 hover:bg-gray-100 focus:bg-blue-100 active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                type="button">
+                <!-- Slide Drawer Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+            </button>
+            <!-- Website Logo/Name -->
+            <!-- <div class="text-xl font-bold text-blue-500">BlogSen</div> -->
+            <div
+                class="py-2 text-2xl font-bold font-pacifico bg-gradient-to-r from-indigo-500 via-rose-300 to-amber-300 bg-clip-text text-transparent">
+                BlogSen
+            </div>
 
-        <!-- Image Upload Area -->
-        <div id="drop-area" class="file-drop-zone rounded-lg p-6 text-center flex flex-col items-center justify-center transition-all duration-200 relative">
-            <span class="text-gray-300" id="upload-instruction">Drag, Drop, Paste, or Upload media</span>
-            <input id="fileElem" type="file" class="hidden" accept="image/*" onchange="handleFiles(this.files)">
-            <button id="upload-button" class="mt-3 px-4 py-2 bg-teal-500 text-white rounded-lg">Upload Image</button>
+            <!-- drop-shadow-[0_0.1px_0.1px_rgba(0,0,0,0.8)] -->
         </div>
 
-        <!-- Image Info Section (Hidden by default) -->
-        <div id="image-info" class="mt-4 hidden">
-            <div class="flex justify-between items-center bg-gray-700 p-3 rounded-lg">
-                <span id="image-name" class="text-gray-300"></span>
-                <button id="remove-button" class="bg-red-500 text-white px-4 py-2 rounded-lg" onclick="removeImage()">Remove</button>
+        <!-- User image and name -->
+        <div class="py-2 px-6">
+            <div class="flex space-x-4">
+                <div class="flex items-center space-x-2">
+                    <!-- temp div for image -->
+                    <span class="font-semibold">User</span>
+                    <!-- <div class="w-10 h-10 rounded-full bg-gray-300"></div> -->
+                    <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
+                        alt="avatar" class="relative inline-block h-10 w-10 !rounded-full object-cover object-center" />
+                </div>
+
+                <!-- <button class="bg-blue-500 text-white px-4 py-2 rounded">Login</button> -->
+                <button data-ripple-light="true"
+                    class="rounded-full bg-blue-500 py-3 px-6 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-blue-600 focus:shadow-none active:bg-blue-600 hover:bg-blue-600 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2"
+                    type="button">
+                    Sign in
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Body -->
+    <div class="flex-1 flex justify-start space-x-4 overflow-y-hidden">
+        <!-- Navigation Rail Column (1st Column) -->
+        <div class="w-20 bg-white shadow-md h-full flex flex-col justify-between items-center pt-28 py-8">
+            <!-- Navigation Rail Links -->
+            <ul class="space-y-6 flex flex-col items-center w-full text-gray-500">
+                <!-- Home Link with Icon -->
+                <li class="cursor-pointer group ">
+                    <a href="{{ url_for('home') }}" class="flex flex-col items-center text-gray-500">
+
+                    <button
+                        class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all group-hover:bg-gray-100 focus:bg-blue-100  {% block homeBtn_active %}{% endblock %} disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                        type="button">
+                            <!-- Home Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                            </svg>
+                    </button>
+                    <span
+                        class="text-xs mt-1 font-medium group-hover:font-bold {% block homeSpan_active %}{% endblock %}">Home</span>
+                    </a>
+
+                </li>
+
+                <!-- Account Link with Icon -->
+                <li class="cursor-pointer group">
+                    <a href="{{ url_for('account') }}" class="flex flex-col items-center text-gray-500 ">
+
+                    <button
+                        class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all  group-hover:bg-gray-100 focus:bg-blue-100 {% block accountBtn_active %}{% endblock %} disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                        type="button">
+                            <!-- Account Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                            </svg>
+                        
+                    </button>
+                    <span
+                        class="text-xs mt-1 font-medium group-hover:font-bold {% block accountSpan_active %}{% endblock %}">Account</span>
+                    </a>
+                </li>
+
+                <!-- Settings Link with Icon -->
+                <li class="cursor-pointer group">
+                    <a href="{{ url_for('settings') }}" class="flex flex-col items-center text-gray-500">
+
+                    <button
+                        class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all group-hover:bg-gray-100 focus:bg-blue-100 {% block settingsBtn_active %}{% endblock %} disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                        type="button">
+                            <!-- Settings Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                    </button>
+                    <span
+                        class="text-xs mt-1 font-medium group-hover:font-bold {% block settingsSpan_active %}{% endblock %}">Settings</span>
+                    </a>
+
+                </li>
+            </ul>
+
+            <!-- Logout Link at the Bottom -->
+            <div class="flex flex-col items-center cursor-pointer group text-gray-500">
+                <button
+                    class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all text-gray-500 group-hover:bg-gray-100 focus:bg-blue-100 group-active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                    type="button">
+                    <a href="#" class="block text-gray-500 group-active:text-blue-500">
+                        <!-- Logout Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                        </svg>
+                    </a>
+                </button>
+                <span
+                    class="text-xs mt-1 font-medium group-hover:font-bold group-active:font-bold group-active:text-blue-500">Logout</span>
             </div>
         </div>
 
-        <!-- Image Preview Area -->
-        <div id="image-preview" class="mt-4"></div>
+
+
+        {% block body %} {% endblock %}
+
 
     </div>
 
-    <script>
-        // Elements
-        let dropArea = document.getElementById('drop-area');
-        let fileInput = document.getElementById('fileElem');
-        let uploadButton = document.getElementById('upload-button');
-        let previewContainer = document.getElementById('image-preview');
-        let imageInfo = document.getElementById('image-info');
-        let imageNameElement = document.getElementById('image-name');
-        let uploadInstruction = document.getElementById('upload-instruction');
+    <script defer src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/upload_image.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/textarea_grow.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/button_collapse.js') }}"></script>
 
-        // Handle file drop
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, preventDefaults, false)
-        });
+    <!-- from material tailwind cdn -->
+    <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"></script>
+    <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/collapse.js"></script>
+    <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/dialog.js"></script>
 
-        function preventDefaults (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => dropArea.classList.add('dragging'), false)
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => dropArea.classList.remove('dragging'), false)
-        });
-
-        // Handle dropped files
-        dropArea.addEventListener('drop', (e) => {
-            let dt = e.dataTransfer;
-            let files = dt.files;
-            handleFiles(files);
-        });
-
-        // Handle file input click
-        uploadButton.addEventListener('click', () => fileInput.click());
-
-        // Handle file paste
-        document.addEventListener('paste', (e) => {
-            let items = (e.clipboardData || e.originalEvent.clipboardData).items;
-            for (let i = 0; i < items.length; i++) {
-                if (items[i].kind === 'file' && items[i].type.startsWith('image/')) {
-                    let file = items[i].getAsFile();
-                    handleFiles([file]);
-                }
-            }
-        });
-
-        // Function to handle file selection and display
-        function handleFiles(files) {
-            if (files.length) {
-                const file = files[0];
-                if (file && file.type.startsWith('image/')) {
-                    let reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onloadend = function () {
-                        // Display image preview
-                        previewContainer.innerHTML = ""; // Clear previous preview
-                        let img = document.createElement('img');
-                        img.src = reader.result;
-                        img.classList.add('w-full', 'mt-3', 'rounded-lg');
-                        previewContainer.appendChild(img);
-
-                        // Display file name and show remove button
-                        imageNameElement.textContent = file.name;
-                        imageInfo.classList.remove('hidden');  // Show image info section
-                        uploadInstruction.classList.add('hidden'); // Hide upload instruction
-                    }
-                }
-            }
-        }
-
-        // Function to remove image
-        function removeImage() {
-            previewContainer.innerHTML = ""; // Clear image preview
-            imageInfo.classList.add('hidden');  // Hide image info section
-            uploadInstruction.classList.remove('hidden');  // Show upload instruction
-            fileInput.value = "";  // Reset file input
-        }
-    </script>
-
+    <!-- <script src="../node_modules/@material-tailwind/html@latest/scripts/ripple.js"></script>
+    <script src="../node_modules/@material-tailwind/html@latest/scripts/collapse.js"></script>
+    <script src="../node_modules/@material-tailwind/html@latest/scripts/dialog.js"></script> -->
 </body>
+
 </html>

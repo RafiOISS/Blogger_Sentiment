@@ -13,6 +13,7 @@ const socket = io();
 const chatMessages = document.getElementById('chat-messages');
 const messageForm = document.getElementById('message-form');
 const messageInput = document.getElementById('message-input');
+// const post_Form = document.querySelector('form');
 
 // function addMessageToChat(message) {
 //     const messageElement = document.createElement('p');
@@ -96,7 +97,13 @@ messageForm.addEventListener('submit', function (e) {
     }
 });
 
+// // Add an event listener to the form's submit event
+// post_Form.addEventListener('submit', (event) => {
+//   event.preventDefault();  // Prevents the form from submitting and refreshing the page
 
+//   // You can add your form submission logic here (e.g., sending data via AJAX)
+//   console.log("Form submitted!");
+// });
 
 
 // Chart
@@ -169,14 +176,14 @@ const radarChart1 = new Chart(radarCtx1, {
         suggestedMax: 20,
         pointLabels: {
             font: {
-              family: 'Roboto'
+              family: 'Poppins'
             },
           },
           ticks: {
             display: true,
             font: {
               size: 10,
-              family: 'Roboto',
+              family: 'Poppins',
             }
           }
       }

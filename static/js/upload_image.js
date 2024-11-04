@@ -6,6 +6,7 @@ let previewContainer = document.getElementById('image-preview');
 let imageInfo = document.getElementById('image-info');
 let imageNameElement = document.getElementById('image-name');
 let uploadInstruction = document.getElementById('upload-instruction');
+const removeButton = document.getElementById('remove-button');
 
 // Handle file drop
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -58,22 +59,30 @@ function handleFiles(files) {
                 previewContainer.innerHTML = ""; // Clear previous preview
                 let img = document.createElement('img');
                 img.src = reader.result;
-                img.classList.add('w-full', 'mt-3', 'rounded-lg');
+                img.classList.add('w-full', 'mb-1', 'h-32', 'object-contain', 'rounded-lg');
                 previewContainer.appendChild(img);
 
                 // Display file name and show remove button
                 imageNameElement.textContent = file.name;
                 imageInfo.classList.remove('hidden');  // Show image info section
-                uploadInstruction.classList.add('hidden'); // Hide upload instruction
+                dropArea.classList.add('hidden'); // Hide upload instruction
+                previewContainer.classList.remove('hidden');  // Show image info section
             }
         }
     }
 }
 
+// Add an event listener to prevent page refresh on button click
+removeButton.addEventListener('click', (event) => {
+    event.preventDefault();  // Prevents page refresh or form submission
+    removeImage();           // Call your function to remove the image
+});
+
 // Function to remove image
 function removeImage() {
     previewContainer.innerHTML = ""; // Clear image preview
     imageInfo.classList.add('hidden');  // Hide image info section
-    uploadInstruction.classList.remove('hidden');  // Show upload instruction
+    dropArea.classList.remove('hidden');  // Show upload instruction
+    previewContainer.classList.add('hidden');  // Show image info section
     fileInput.value = "";  // Reset file input
 }
