@@ -26,30 +26,19 @@
 
 # ngrok http 5000
 
+# npm install -D prettier prettier-plugin-tailwindcss
 
-
-
-# from flask import Flask, render_template
-
-# app = Flask("Blogger Sentiment")
-
-# @app.route("/")
-# def index():
-#     return render_template('index.html')
-
-# if __name__ == "__main__":
-#     app.run(debug=True, host='0.0.0.0')
 # python app.py
-
-
 
 # pip install flask-socketio
 # pip install Flask-SQLAlchemy
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, url_for
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from werkzeug.utils import secure_filename
+import os
 
 # pip install plotly
 # pip install kaleido
@@ -59,12 +48,18 @@ import plotly.io as pio
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'temp-secret-key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///BloggerSentiment.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Initialize database and socket connection
 db = SQLAlchemy(app)
 socketio = SocketIO(app)
 
+# -----------------------------
+# Database Models
+# -----------------------------
+
+# Message Model
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(500), nullable=False)
@@ -79,56 +74,46 @@ class Message(db.Model):
             'timestamp': self.timestamp.isoformat()
         }
 
-# # Create the figure
-# fig = go.Figure(data=go.Scatterpolar(
-#     r=[0, 5, 2, 4, 3],
-#     theta=['Happy', 'Sad', 'Angry', 'Surprised', 'Disappointed'],
-#     fill='toself'
-# ))
+# Post Model
+class Post(db.Model):
+    __tablename__ = 'posts'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(500), nullable=False)
+    caption = db.Column(db.String(200), nullable=True)
+    image_filename = db.Column(db.String(100), nullable=True)
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.now())
 
-# # Update the layout to remove background colors and margins
-# fig.update_layout(
-#     polar=dict(
-#         radialaxis=dict(visible=False),  # Hide radial axis
-#     ),
-#     showlegend=False,
-#     plot_bgcolor='rgba(0,0,0,0)',  # Transparent plot background
-#     paper_bgcolor='rgba(0,0,0,0)',  # Transparent page background
-#     margin=dict(l=20, r=20, t=20, b=20),  # Remove all margins
-#     autosize=True,  # Ensure no extra space
-# )
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'caption': self.caption,
+            'image_url': url_for('static', filename=f'uploads/{self.image_filename}') if self.image_filename else None,
+            'timestamp': self.timestamp.isoformat()
+        }
 
-# # Generate the HTML of the figure
-# plot_html = pio.to_html(fig, full_html=False, config={'displayModeBar': False})
-
+# -----------------------------
+# Routes for Messages
+# -----------------------------
 
 @app.route('/')
 def home():
-    # return render_template('chat2_index.html')
-    # return render_template('temp_index.html')
-    # return render_template('navrail.html')
     return render_template('home.html')
 
 @app.route('/messages')
 def get_messages():
     messages = Message.query.order_by(Message.timestamp).all()
-    print(messages)
+    # print(messages)
     return jsonify([message.to_dict() for message in messages])
-
-# @socketio.on('send_message')
-# def handle_message(data):
-#     message_content = data.get('message', '').strip()
-#     if message_content:  # Only process if the message is not empty
-#         message = Message(content=message_content)
-#         db.session.add(message)
-#         db.session.commit()
-#         emit('receive_message', message.to_dict(), broadcast=True)
 
 @socketio.on('send_message')
 def handle_message(data):
     message_content = data.get('message', '').strip()
     # If the user sends a message, process and save it
-    if message_content:  
+    if message_content:
+        # Process user message
         user_message = Message(content=message_content, sender='user')
         db.session.add(user_message)
         db.session.commit()
@@ -143,6 +128,41 @@ def handle_message(data):
         # Broadcast bot message
         emit('receive_message', bot_message.to_dict(), broadcast=True)
 
+# -----------------------------
+# Routes for Posts
+# -----------------------------
+
+@app.route('/get_posts')
+def get_posts():
+    # Order by ascending timestamp to get the newest posts first
+    posts = Post.query.order_by(Post.timestamp.asc()).all()
+    return jsonify([post.to_dict() for post in posts])
+
+@socketio.on('submit_post')
+def handle_post_submission(data):
+    title = data.get('title')
+    description = data.get('description')
+    caption = data.get('caption', '')
+    image_filename = data.get('image_filename')
+
+    if title and description:
+        new_post = Post(title=title, description=description, caption=caption, image_filename=image_filename)
+        db.session.add(new_post)
+        db.session.commit()
+        emit('receive_post', new_post.to_dict(), broadcast=True)
+
+@app.route('/upload_image', methods=['POST'])
+def upload_image():
+    image = request.files.get('image')  # Use get to avoid KeyError if no file is uploaded
+    if image and image.filename:  # Check if an image is actually uploaded
+        filename = secure_filename(image.filename)
+        image.save(os.path.join('static', 'uploads', filename))
+    else:
+        filename = None  # Set filename to None if no image is uploaded
+    
+    return jsonify({'filename': filename})
+
+
 @app.route('/account')
 def account():
     return render_template('account.html')
@@ -150,6 +170,10 @@ def account():
 @app.route('/settings')
 def settings():
     return render_template('settings.html')
+
+# -----------------------------
+# Main Application Entry
+# -----------------------------
 
 if __name__ == '__main__':
     with app.app_context():

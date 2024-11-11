@@ -8,7 +8,7 @@ const openFormButton = document.getElementById('post-open-form');
 const closeFormButton = document.getElementById('post-close-form');
 const postDashboard = document.getElementById('post-dashboard');
 const postDashboardBottom = document.getElementById('post-dashboard-bottom');
-const postForm = document.getElementById('post-form');
+const postFormDiv = document.getElementById('post-form-div');
 
 // Show the chat column and hide the chat button on chat button click
 chatButton.addEventListener('click', () => {
@@ -28,12 +28,12 @@ closeButton.addEventListener('click', () => {
 openFormButton.addEventListener('click', () => {
     postDashboard.classList.add('hidden');         // Hide post dashboard
     postDashboardBottom.classList.add('hidden');  // Hide dashboard content
-    postForm.classList.remove('hidden');           // Show post form
+    postFormDiv.classList.remove('hidden');           // Show post form
 });
 
 // Show the dashboard and hide the post form when Back button is clicked
 closeFormButton.addEventListener('click', () => {
     postDashboard.classList.remove('hidden');      // Show post dashboard
     postDashboardBottom.classList.remove('hidden'); // Show dashboard content
-    postForm.classList.add('hidden');              // Hide post form
+    postFormDiv.classList.add('hidden');              // Hide post form
 });

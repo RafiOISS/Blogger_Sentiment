@@ -4,8 +4,8 @@
 {% block homeBtn_active %}bg-blue-100 text-blue-500{% endblock %}
 {% block homeSpan_active %}font-bold text-blue-500{% endblock %}
 
-{% block accountBtn_active %}text-gray-500{% endblock %}
-{% block settingsBtn_active %}text-gray-500{% endblock %}
+{% block accountBtn_active %}text-gray-500 group-hover:bg-gray-100{% endblock %}
+{% block settingsBtn_active %}text-gray-500 group-hover:bg-gray-100{% endblock %}
 
 
 
@@ -17,10 +17,10 @@
         <!-- Scrollable Posts Section -->
         <!-- <div class="overflow-y-auto space-y-6 h-[calc(100vh-10rem)]"> -->
 
-        <div id="post-form"
-            class="w-full max-w-screen-xl h-full space-y-6 bg-white mt-20 py-6 px-10 mx-auto shadow-lg rounded-3xl overflow-y-auto hidden">
+        <div id="post-form-div"
+            class="w-full max-w-screen-xl h-full space-y-6 bg-white mt-20 mb-5 py-6 px-10 mx-auto shadow-lg rounded-3xl overflow-y-auto hidden">
             <!-- Post Submission Form -->
-            <form enctype="multipart/form-data" class="flex flex-col h-full space-y-6">
+            <form id="post-form" enctype="multipart/form-data" class="flex flex-col h-full space-y-6" method="post">
                 <div class="flex flex-col space-y-6 justify-center items-center">
                     <div class="w-full max-w-3xl min-w-[200px]">
                         <div>
@@ -43,8 +43,8 @@
                     <!-- Post Title -->
                     <div class="w-full max-w-3xl min-w-[200px]">
                         <div class="relative">
-                            <input type="text" placeholder=" "
-                                class="peer w-full bg-transparent text-gray-700 text-sm border border-gray-500 rounded-md px-3.5 py-4 focus:outline-blue-500 focus:border-blue-500" />
+                            <input type="text" id="title" name="title" placeholder=" "
+                                class="peer w-full bg-transparent text-gray-700 text-sm border border-gray-500 rounded-md px-3.5 py-4 focus:outline-blue-500 focus:border-blue-500" required/>
                             <label for="title"
                                 class="block pointer-events-none absolute cursor-text bg-white px-1 left-2.5 -top-2 text-gray-500 text-xs transition-all transform origin-left peer-focus:text-blue-500 peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-placeholder-shown:top-4 peer-placeholder-shown:left-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:scale-100">
                                 Title
@@ -76,7 +76,7 @@
                             <input id="fileElem" type="file" name="image" class="hidden" accept="image/*"
                                 onchange="handleFiles(this.files)" />
                             <button id="upload-button" type="button"
-                                class="mt-3 px-6 py-3 bg-blue-100 text-gray-600 hover:text-gray-700 rounded-3xl hover:bg-blue-200 flex items-center space-x-2">
+                                class="mt-3 px-6 py-3 bg-blue-100 text-gray-700 drop-shadow-md rounded-3xl hover:bg-blue-200 flex items-center space-x-2">
                                 <span>Upload Image</span>
 
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -112,7 +112,7 @@
                     <div class="w-full max-w-3xl min-w-[200px]">
                         <div class="relative">
                             <textarea name="description" id="description" placeholder=" " rows="4"
-                                class="peer resize-none w-full min-h-24 max-h-full bg-transparent text-gray-700 text-sm border border-gray-500 rounded-md px-3.5 py-4 focus:outline-blue-500 focus:border-blue-500 overflow-hidden"></textarea>
+                                class="peer resize-none w-full min-h-24 max-h-full bg-transparent text-gray-700 text-sm border border-gray-500 rounded-md px-3.5 py-4 focus:outline-blue-500 focus:border-blue-500 overflow-hidden" required></textarea>
 
                             <label for="description"
                                 class="block pointer-events-none absolute cursor-text bg-white px-1 left-2.5 -top-2 text-gray-500 text-xs transition-all transform origin-left peer-focus:text-blue-500 peer-focus:-top-2 peer-focus:left-2.5 peer-focus:text-xs peer-placeholder-shown:top-4 peer-placeholder-shown:left-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500 peer-placeholder-shown:scale-100">
@@ -121,7 +121,7 @@
                     </div>
                 </div>
 
-                <!-- Submit and Cancel Buttons -->
+                <!-- Submit Buttons -->
                 <div class="flex justify-center space-x-4">
                     <button type="submit" data-ripple-light="true"
                         class="w-full max-w-3xl min-w-[200px] bg-blue-500 text-white px-6 py-3 rounded-3xl hover:bg-blue-600 transition-all mb-4">
