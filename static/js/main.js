@@ -147,9 +147,8 @@ function renderPost(post) {
 
   const postHtml = `
     <div class="bg-white shadow-md rounded-3xl p-4 space-y-4">
-      <div class="flex justify-between items-start">
-        <div class="w-1/2 flex flex-col space-y-8">
-          <div class="flex items-center space-x-2">
+
+      <div class="flex items-center space-x-2">
             <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80" alt="avatar"
                  class="relative inline-block h-9 w-9 !rounded-full object-cover object-center" />
             <div>
@@ -157,37 +156,32 @@ function renderPost(post) {
               <p class="text-sm text-gray-500">${timestamp}</p>
             </div>
           </div>
+
+      <div class="flex justify-between items-start">
+        <div class="w-1/2 flex flex-col space-y-8">
+          
           <div>
             <p class="text-lg font-semibold">${post.title}</p>
             <p class="text-gray-600 italic">${post.caption}</p>
           </div>
           <!-- Post Image -->
-          ${post.image_url ? `<div class="w-full h-56 bg-gray-100 rounded-3xl mt-2">
+          ${post.image_url ? `<div class="w-full h-56 bg-gray-100 rounded-3xl">
             <img src="${post.image_url}" alt="Post Image" class="h-full w-full object-contain rounded-lg"/>
-          </div>` : ''}
+          </div>` : 
+          `<div class="w-full h-56 bg-gray-100 rounded-3xl flex justify-center items-center space-x-4 text-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
+          </svg>
+          <p>No image in this post.</p>
+          </div>`}
         </div>
         <div class="w-1/2 h-full flex items-center justify-center">
-          <canvas class="max-w-72 max-h-72" id="radarChart1"></canvas>
+          <canvas class="max-w-72 max-h-72" id="radarChart-${post.id}"></canvas>
         </div>
       </div>
       <p class="text-gray-700 mt-4 first-letter:text-7xl  first-letter:me-3 first-letter:float-start first-letter:font-pacifico first-letter:uppercase">${post.description}</p>
-      <div class="flex justify-start items-center space-x-4">
-        <button class="rounded-full border border-transparent py-1 px-4 text-center text-sm transition-all text-blue-500 hover:bg-blue-100 flex items-center justify-center gap-2" type="button"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="size-4"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z"
-          />
-        </svg>Share</button>
+      <div class="flex justify-end items-center space-x-4">
+        
         <button class="rounded-full border border-transparent py-1 px-4 text-center text-sm transition-all text-blue-500 hover:bg-blue-100 flex items-center justify-center gap-2" type="button"
       >
         <svg
@@ -204,10 +198,29 @@ function renderPost(post) {
             d="M19.114 5.636a9 9 0 0 1 0 12.728M16.463 8.288a5.25 5.25 0 0 1 0 7.424M6.75 8.25l4.72-4.72a.75.75 0 0 1 1.28.53v15.88a.75.75 0 0 1-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.009 9.009 0 0 1 2.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75Z"
           />
         </svg>Listen</button>
+        <button class="rounded-full border border-transparent py-1 px-4 text-center text-sm transition-all text-blue-500 hover:bg-blue-100 flex items-center justify-center gap-2" type="button"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z"
+          />
+        </svg>Share</button>
       </div>
     </div>`;
   
   postDashboard.insertAdjacentHTML('afterbegin', postHtml);
+
+  // Render radar chart for the post
+  renderRadarChart(post.id);
 }
 
 // Fetch and load existing posts
@@ -279,6 +292,65 @@ postForm.addEventListener('submit', submitPost);
 
 
 // Chart
+
+async function renderRadarChart(postId) {
+  try {
+    // Fetch sentiment data for the post
+    const response = await fetch(`/get_sentiment_data?post_id=${postId}`);
+    const sentiment = await response.json();
+
+    // Get the canvas for the radar chart
+    const ctx = document.getElementById(`radarChart-${postId}`).getContext('2d');
+
+    // Render the radar chart
+    new Chart(ctx, {
+      type: 'radar',
+      data: {
+        labels: ['Happy', 'Sad', 'Angry', 'Surprised', 'Neutral'],
+        datasets: [{
+          label: 'Sentiment Analysis',
+          data: [sentiment.happy, sentiment.sad, sentiment.angry, sentiment.surprised, sentiment.neutral],
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            beginAtZero: true,
+            suggestedMin: 0,
+            suggestedMax: 20,
+            pointLabels: {
+              font: {
+                family: 'Poppins'
+              },
+            },
+            ticks: {
+              display: true,
+              font: {
+                size: 10,
+                family: 'Poppins',
+              }
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false // Disable legend for radar chart
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.error(`Failed to render radar chart for post ${postId}:`, error);
+  }
+}
+
+
+
 
 
 // Doughnut Chart

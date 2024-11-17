@@ -40,6 +40,8 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
 
+import random
+
 # pip install plotly
 # pip install kaleido
 
@@ -93,6 +95,18 @@ class Post(db.Model):
             'image_url': url_for('static', filename=f'uploads/{self.image_filename}') if self.image_filename else None,
             'timestamp': self.timestamp.isoformat()
         }
+        
+# Define Sentiment Model
+class Sentiment(db.Model):
+    __tablename__ = 'sentiment'
+    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
+    happy = db.Column(db.Integer, nullable=False)
+    sad = db.Column(db.Integer, nullable=False)
+    angry = db.Column(db.Integer, nullable=False)
+    surprised = db.Column(db.Integer, nullable=False)
+    neutral = db.Column(db.Integer, nullable=False)
+
 
 # -----------------------------
 # Routes for Messages
@@ -138,6 +152,19 @@ def get_posts():
     posts = Post.query.order_by(Post.timestamp.asc()).all()
     return jsonify([post.to_dict() for post in posts])
 
+# @socketio.on('submit_post')
+# def handle_post_submission(data):
+#     title = data.get('title')
+#     description = data.get('description')
+#     caption = data.get('caption', '')
+#     image_filename = data.get('image_filename')
+
+#     if title and description:
+#         new_post = Post(title=title, description=description, caption=caption, image_filename=image_filename)
+#         db.session.add(new_post)
+#         db.session.commit()
+#         emit('receive_post', new_post.to_dict(), broadcast=True)
+
 @socketio.on('submit_post')
 def handle_post_submission(data):
     title = data.get('title')
@@ -146,10 +173,26 @@ def handle_post_submission(data):
     image_filename = data.get('image_filename')
 
     if title and description:
+        # Step 1: Create and store the new post
         new_post = Post(title=title, description=description, caption=caption, image_filename=image_filename)
         db.session.add(new_post)
-        db.session.commit()
+        db.session.commit()  # Commit to get the new post ID
+        
+        # Step 2: Generate random sentiment data for the post
+        sentiment_data = Sentiment(
+            post_id=new_post.id,
+            happy=random.randint(0, 20),
+            sad=random.randint(0, 20),
+            angry=random.randint(0, 20),
+            surprised=random.randint(0, 20),
+            neutral=random.randint(0, 20)
+        )
+        db.session.add(sentiment_data)
+        db.session.commit()  # Commit the sentiment data
+
+        # Step 3: Emit the new post data (including the post ID)
         emit('receive_post', new_post.to_dict(), broadcast=True)
+
 
 @app.route('/upload_image', methods=['POST'])
 def upload_image():
@@ -161,6 +204,49 @@ def upload_image():
         filename = None  # Set filename to None if no image is uploaded
     
     return jsonify({'filename': filename})
+
+# Route to Generate Random Sentiment Data for Each Post
+# @app.route('/generate_sentiment_data')
+# def generate_sentiment_data():
+#     posts = Post.query.all()
+#     if not posts:
+#         return jsonify({"error": "No posts found"}), 404
+
+#     for post in posts:
+#         # Debugging: Print post ID
+#         print(f"Generating sentiment for post ID: {post.id}")
+        
+#         # Generate random sentiment scores between 0 and 20
+#         sentiment_data = Sentiment(
+#             post_id=post.id,
+#             happy=random.randint(0, 20),
+#             sad=random.randint(0, 20),
+#             angry=random.randint(0, 20),
+#             surprised=random.randint(0, 20),
+#             neutral=random.randint(0, 20)
+#         )
+#         db.session.add(sentiment_data)
+
+#     db.session.commit()
+#     print("Sentiment data generation complete.")
+#     return jsonify({"status": "Sentiment data generated for each post"})
+
+
+@app.route('/get_sentiment_data')
+def get_sentiment_data():
+    post_id = request.args.get('post_id', type=int)
+    sentiment = Sentiment.query.filter_by(post_id=post_id).first()
+
+    if not sentiment:
+        return jsonify({"error": "Sentiment data not found"}), 404
+
+    return jsonify({
+        "happy": sentiment.happy,
+        "sad": sentiment.sad,
+        "angry": sentiment.angry,
+        "surprised": sentiment.surprised,
+        "neutral": sentiment.neutral
+    })
 
 
 @app.route('/account')

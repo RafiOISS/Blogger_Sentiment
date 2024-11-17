@@ -4,23 +4,33 @@
   {% for i in range(2) %}
   <!-- Individual Post -->
   <div class="bg-white shadow-md rounded-3xl p-4 space-y-4">
+    <!-- Post Header (User Info + Date + Image) -->
+    <div class="flex justify-between">
+      <div class="flex items-center space-x-2">
+        <!-- temp div for image -->
+        <img
+          src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
+          alt="avatar"
+          class="relative inline-block h-9 w-9 !rounded-full object-cover object-center"
+        />
+        <div>
+          <p class="font-semibold">User</p>
+          <p class="text-sm text-gray-500">dd/mm/yy, hh:mm AM/PM</p>
+        </div>
+      </div>
+      <button class="rounded-full hover:bg-gray-100 px-2.5 text-gray-500">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+        </svg>
+        
+      </button>
+    </div>
+
     <div class="flex justify-between items-start">
       <!-- Div 1 (50% width) -->
       <div class="w-1/2 flex flex-col space-y-8">
         <!-- Div 1.1 -->
-        <!-- Post Header (User Info + Date + Image) -->
-        <div class="flex items-center space-x-2">
-          <!-- temp div for image -->
-          <img
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
-            alt="avatar"
-            class="relative inline-block h-9 w-9 !rounded-full object-cover object-center"
-          />
-          <div>
-            <p class="font-semibold">User</p>
-            <p class="text-sm text-gray-500">dd/mm/yy, hh:mm AM/PM</p>
-          </div>
-        </div>
+
         <!-- Div 1.2 -->
         <!-- Post Title & Caption -->
         <div>
@@ -31,11 +41,25 @@
         </div>
 
         <!-- Post Image -->
-        <div class="w-full h-56 bg-gray-100 rounded-3xl mt-2">
+        <div
+          class="w-full h-56 bg-gray-100 rounded-3xl flex justify-center items-center space-x-4 text-gray-500"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"
+            />
+          </svg>
+          <p>No image in this post.</p>
         </div>
-
-        
-
       </div>
 
       <!-- temp div for Sentiment Graph -->
@@ -46,20 +70,19 @@
         <div class="w-full h-full rounded-3xl flex items-center justify-center">
           {% if i == 1 %}
           <!-- <div class="w-full h-full"> -->
-            
+
           <canvas class="max-w-72 max-h-72" id="doughnutChart"></canvas>
           <!-- </div> -->
           <!-- Doughnut Chart -->
           <!-- <canvas id="doughnutChart"></canvas> -->
           {% else %}
-          <canvas class="max-w-72 max-h-72 " id="radarChart1"></canvas>
+          <canvas class="max-w-72 max-h-72" id="radarChart1"></canvas>
           {% endif %}
           <!-- <canvas id="radarChart2"></canvas> -->
         </div>
         <!-- <canvas id="radarChart"></canvas> -->
       </div>
     </div>
-
 
     <!-- Rest of the post content -->
 
@@ -78,27 +101,7 @@
     </p>
 
     <!-- Post Footer (Share + Listen) -->
-    <div class="flex justify-start items-center space-x-4">
-      <button
-        class="rounded-full border border-transparent py-1 px-4 text-center text-sm transition-all text-blue-500 hover:bg-blue-100 focus:bg-blue-100 active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2"
-        type="button"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="size-4"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z"
-          />
-        </svg>
-        Share
-      </button>
+    <div class="flex justify-end items-center space-x-4">
       <button
         class="rounded-full border border-transparent py-1 px-4 text-center text-sm transition-all text-blue-500 hover:bg-blue-100 focus:bg-blue-100 active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2"
         type="button"
@@ -118,6 +121,27 @@
           />
         </svg>
         Listen
+      </button>
+
+      <button
+        class="rounded-full border border-transparent py-1 px-4 text-center text-sm transition-all text-blue-500 hover:bg-blue-100 focus:bg-blue-100 active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2"
+        type="button"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z"
+          />
+        </svg>
+        Share
       </button>
     </div>
   </div>
