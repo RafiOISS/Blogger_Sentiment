@@ -72,7 +72,7 @@ function addMessageToChat(message) {
 
   // Message HTML
   messageContainer.innerHTML = `
-        ${isUser ? '' : `  <div class="w-9 h-9 bg-pink-100 rounded-full flex items-center justify-center border">
+        ${isUser ? '' : `  <div class="w-9 h-9 text-slate-700 bg-pink-100 rounded-full flex items-center justify-center border">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
 </svg>
@@ -80,9 +80,9 @@ function addMessageToChat(message) {
           </div>
 `}
         <div>
-            <p class="font-semibold text-sm ${isUser ? 'text-right' : ''}">${isUser ? 'User' : 'Bot'}</p>
+            <p class="font-semibold text-sm text-slate-700 ${isUser ? 'text-right' : ''}">${isUser ? 'User' : 'Bot'}</p>
             <p class="text-xs text-gray-500 ${isUser ? 'text-right' : ''}">${timestamp}</p>
-            <div class="${isUser ? 'bg-blue-100' : 'bg-gray-100'} p-3 rounded-3xl max-w-xs">
+            <div class="${isUser ? 'bg-blue-100' : 'bg-gray-100'} p-3 text-slate-950 rounded-3xl max-w-xs">
                 <p>${message.content}</p>
             </div>
         </div>
@@ -148,20 +148,66 @@ function renderPost(post) {
   const postHtml = `
     <div class="bg-white shadow-md rounded-3xl p-4 space-y-4">
 
+    <div class="flex justify-between">
       <div class="flex items-center space-x-2">
             <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80" alt="avatar"
                  class="relative inline-block h-9 w-9 !rounded-full object-cover object-center" />
             <div>
-              <p class="font-semibold">User</p>
+              <p class="font-semibold text-slate-600">User</p>
               <p class="text-sm text-gray-500">${timestamp}</p>
             </div>
+          </div>
+
+          <div class="relative inline-block text-left">
+        <div>
+          <button type="button"
+            class="inline-flex w-full justify-center gap-x-1.5 rounded-full bg-white active:bg-gray-200 px-2 py-2 font-semibold text-gray-900 shadow-sm hover:bg-gray-100"
+            id="menu-button-${post.id}" aria-expanded="false" aria-haspopup="true">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+            </svg>
+          </button>
+        </div>
+
+        <div
+          class="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none hidden"
+          role="menu" aria-orientation="vertical" id="dropdown-menu-${post.id}" tabindex="-1">
+          <div class="py-1" role="none">
+            <a href="#"
+              class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-200 mx-1 rounded-md flex items-center gap-2"
+              role="menuitem" tabindex="-1">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+              </svg>
+
+              Edit
+            </a>
+            <a href="#"
+              class="px-4 py-2 text-sm text-pink-600 hover:bg-gray-100 active:bg-gray-200 mx-1 rounded-md flex items-center gap-2"
+              role="menuitem" tabindex="-1">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="size-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+              </svg>
+
+              Remove
+            </a>
+          </div>
+        </div>
+      </div>
+
           </div>
 
       <div class="flex justify-between items-start">
         <div class="w-1/2 flex flex-col space-y-8">
           
           <div>
-            <p class="text-lg font-semibold">${post.title}</p>
+            <p class="text-lg text-slate-600 font-semibold">${post.title}</p>
             <p class="text-gray-600 italic">${post.caption}</p>
           </div>
           <!-- Post Image -->
@@ -221,6 +267,12 @@ function renderPost(post) {
 
   // Render radar chart for the post
   renderRadarChart(post.id);
+
+  // Initialize dropdown menu functionality
+  initDropdownMenu(post.id);
+
+  // Auto-scroll to the top after adding a new post
+  postDashboard.scrollTop = 0;
 }
 
 // Fetch and load existing posts
@@ -289,6 +341,31 @@ postForm.addEventListener('submit', submitPost);
 //   // You can add your form submission logic here (e.g., sending data via AJAX)
 //   console.log("Form submitted!");
 // });
+
+function initDropdownMenu(postId) {
+  const menuButton = document.getElementById(`menu-button-${postId}`);
+  const dropdownMenu = document.getElementById(`dropdown-menu-${postId}`);
+
+  if (!menuButton || !dropdownMenu) {
+    console.error(`Dropdown elements not found for post ${postId}`);
+    return;
+  }
+
+  // Toggle dropdown visibility
+  menuButton.addEventListener('click', (event) => {
+    event.stopPropagation(); // Prevent immediate closing
+    const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
+    menuButton.setAttribute('aria-expanded', !isExpanded);
+    dropdownMenu.classList.toggle('hidden');
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', () => {
+    menuButton.setAttribute('aria-expanded', 'false');
+    dropdownMenu.classList.add('hidden');
+  });
+}
+
 
 
 // Chart
