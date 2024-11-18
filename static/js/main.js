@@ -146,7 +146,7 @@ function renderPost(post) {
   const timestamp = formatTimestamp(post.timestamp);
 
   const postHtml = `
-    <div class="bg-white shadow-md rounded-3xl p-4 space-y-4">
+    <div class="bg-white shadow-md rounded-3xl p-4 space-y-4 id="post-${post.id}"">
 
     <div class="flex justify-between">
       <div class="flex items-center space-x-2">
@@ -187,8 +187,8 @@ function renderPost(post) {
               Edit
             </a>
             <a href="#"
-              class="px-4 py-2 text-sm text-pink-600 hover:bg-gray-100 active:bg-gray-200 mx-1 rounded-md flex items-center gap-2"
-              role="menuitem" tabindex="-1">
+              class="px-4 py-2 text-sm text-pink-600 hover:bg-gray-100 active:bg-gray-200 mx-1 rounded-md flex items-center gap-2 remove-link"
+              role="menuitem" tabindex="-1" data-id="${post.id}">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="size-4">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -273,6 +273,9 @@ function renderPost(post) {
 
   // Auto-scroll to the top after adding a new post
   postDashboard.scrollTop = 0;
+
+  // Attach click event listener to remove link
+  attachRemoveEvent(post.id);
 }
 
 // Fetch and load existing posts
@@ -280,6 +283,11 @@ async function loadPosts() {
   try {
     const response = await fetch('/get_posts');
     const posts = await response.json();
+
+    // Clear the current posts
+    postDashboard.innerHTML = '';
+
+    // Render each post dynamically
     posts.forEach(renderPost);
   } catch (error) {
     console.error("Failed to load posts:", error);
@@ -342,6 +350,7 @@ postForm.addEventListener('submit', submitPost);
 //   console.log("Form submitted!");
 // });
 
+// Dropdown menu
 function initDropdownMenu(postId) {
   const menuButton = document.getElementById(`menu-button-${postId}`);
   const dropdownMenu = document.getElementById(`dropdown-menu-${postId}`);
@@ -365,6 +374,51 @@ function initDropdownMenu(postId) {
     dropdownMenu.classList.add('hidden');
   });
 }
+
+// Remove in dropdown menu
+function attachRemoveEvent(postId) {
+  const removeLink = document.querySelector(`.remove-link[data-id="${postId}"]`);
+
+  if (!removeLink) {
+    console.error(`Remove link not found for post ${postId}`);
+    return;
+  }
+
+  removeLink.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    // Emit a socket message to remove the post
+    socket.emit('remove_post', { id: postId });
+
+    // Optimistically remove the post from the DOM
+    const postElement = document.getElementById(`post-${postId}`);
+    if (postElement) {
+      postElement.classList.add('opacity-50'); // Reduce opacity to indicate removal in progress
+    }
+  });
+}
+
+function showNotification(message, type = 'success') {
+  const notification = document.createElement('div');
+  notification.className = `fixed top-4 right-4 bg-${type === 'success' ? 'green' : 'red'}-100 border border-${type === 'success' ? 'green' : 'red'}-400 text-${type === 'success' ? 'green' : 'red'}-700 px-4 py-2 rounded shadow`;
+  notification.textContent = message;
+
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.remove();
+  }, 3000); // Remove after 3 seconds
+}
+
+
+// Listen for the 'post_removed' event
+socket.on('post_removed', () => {
+  // Clear the current posts
+  postDashboard.innerHTML = '';
+
+  // Reload all posts dynamically
+  loadPosts();
+});
 
 
 

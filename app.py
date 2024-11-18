@@ -248,6 +248,29 @@ def get_sentiment_data():
         "neutral": sentiment.neutral
     })
 
+@socketio.on('remove_post')
+def handle_remove_post(data):
+    post_id = data.get('id')
+
+    if not post_id:
+        return
+
+    # Remove the post from the database
+    post = Post.query.get(post_id)
+    if post:
+        db.session.delete(post)
+
+        # Remove the associated sentiment data, if any
+        Sentiment.query.filter_by(post_id=post_id).delete()
+
+        db.session.commit()
+
+    # Broadcast the post removal to other clients
+    emit('post_removed', {}, broadcast=True)
+
+# -----------------------------
+# Other Routes
+# -----------------------------
 
 @app.route('/account')
 def account():
