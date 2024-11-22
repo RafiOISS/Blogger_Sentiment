@@ -319,6 +319,7 @@ async function submitPost(e) {
     postDescriptionInput.value = '';
     postCaptionInput.value = '';
     postImageInput.value = '';
+    removeImage();
 
     // Check if required fields (title and description) are filled and then close the form
     if (postData.title && postData.description) {  
@@ -437,10 +438,10 @@ async function renderRadarChart(postId) {
     new Chart(ctx, {
       type: 'radar',
       data: {
-        labels: ['Happy', 'Sad', 'Angry', 'Surprised', 'Neutral'],
+        labels: ['Surprise', 'Joy', 'Neutral', 'Sad', 'Disgust', 'Fear', 'Angry'],
         datasets: [{
           label: 'Sentiment Analysis',
-          data: [sentiment.happy, sentiment.sad, sentiment.angry, sentiment.surprised, sentiment.neutral],
+          data: [sentiment.surprised, sentiment.happy, sentiment.neutral, sentiment.sad, sentiment.disgust, sentiment.fear, sentiment.angry],
           backgroundColor: 'rgba(54, 162, 235, 0.2)',
           borderColor: 'rgba(54, 162, 235, 1)',
           borderWidth: 2
@@ -453,7 +454,7 @@ async function renderRadarChart(postId) {
           r: {
             beginAtZero: true,
             suggestedMin: 0,
-            suggestedMax: 20,
+            suggestedMax: 100,
             pointLabels: {
               font: {
                 family: 'Poppins'
@@ -484,124 +485,124 @@ async function renderRadarChart(postId) {
 
 
 
-// Doughnut Chart
-const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
-const doughnutChart = new Chart(doughnutCtx, {
-  type: 'doughnut',
-  data: {
-    labels: ['Happy', 'Sad', 'Angry', 'Surprised', 'Neutral'], // Labels for the doughnut chart
-    datasets: [{
-      data: [10, 15, 5, 8, 12], // Example data
-      backgroundColor: [
-        'rgba(75, 192, 192, 0.7)',
-        'rgba(255, 99, 132, 0.7)',
-        'rgba(255, 206, 86, 0.7)',
-        'rgba(153, 102, 255, 0.7)',
-        'rgba(255, 159, 64, 0.7)'
-      ],
-      borderColor: [
-        'rgba(75, 192, 192, 1)',
-        'rgba(255, 99, 132, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)'
-      ],
-      borderWidth: 1
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    cutout: '80%',
-    plugins: {
-      legend: {
-        display: true, // Enable legend for the doughnut chart
-        position: 'left',
-        labels: {
-          boxWidth: 15, // Set box width for square-shaped legend boxes
-          //   padding: 20
-        }
-      }
-    }
-  },
+// // Doughnut Chart
+// const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
+// const doughnutChart = new Chart(doughnutCtx, {
+//   type: 'doughnut',
+//   data: {
+//     labels: ['Happy', 'Sad', 'Angry', 'Surprised', 'Neutral'], // Labels for the doughnut chart
+//     datasets: [{
+//       data: [10, 15, 5, 8, 12], // Example data
+//       backgroundColor: [
+//         'rgba(75, 192, 192, 0.7)',
+//         'rgba(255, 99, 132, 0.7)',
+//         'rgba(255, 206, 86, 0.7)',
+//         'rgba(153, 102, 255, 0.7)',
+//         'rgba(255, 159, 64, 0.7)'
+//       ],
+//       borderColor: [
+//         'rgba(75, 192, 192, 1)',
+//         'rgba(255, 99, 132, 1)',
+//         'rgba(255, 206, 86, 1)',
+//         'rgba(153, 102, 255, 1)',
+//         'rgba(255, 159, 64, 1)'
+//       ],
+//       borderWidth: 1
+//     }]
+//   },
+//   options: {
+//     responsive: true,
+//     maintainAspectRatio: false,
+//     cutout: '80%',
+//     plugins: {
+//       legend: {
+//         display: true, // Enable legend for the doughnut chart
+//         position: 'left',
+//         labels: {
+//           boxWidth: 15, // Set box width for square-shaped legend boxes
+//           //   padding: 20
+//         }
+//       }
+//     }
+//   },
 
-});
+// });
 
-// Radar Chart 1
-const radarCtx1 = document.getElementById('radarChart1').getContext('2d');
-const radarChart1 = new Chart(radarCtx1, {
-  type: 'radar',
-  data: {
-    labels: ['Happy', 'Sad', 'Angry', 'Surprised', 'Neutral'],
-    datasets: [{
-      label: 'Sentiment 1',
-      data: [12, 19, 3, 5, 2],
-      backgroundColor: 'rgba(54, 162, 235, 0.2)',
-      borderColor: 'rgba(54, 162, 235, 1)',
-      borderWidth: 2
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      r: {
-        beginAtZero: true,
-        suggestedMin: 0,
-        suggestedMax: 20,
-        pointLabels: {
-          font: {
-            family: 'Poppins'
-          },
-        },
-        ticks: {
-          display: true,
-          font: {
-            size: 10,
-            family: 'Poppins',
-          }
-        }
-      }
-    },
-    plugins: {
-      legend: {
-        display: false // Disable legend for radar chart
-      }
-    }
-  }
-});
+// // Radar Chart 1
+// const radarCtx1 = document.getElementById('radarChart1').getContext('2d');
+// const radarChart1 = new Chart(radarCtx1, {
+//   type: 'radar',
+//   data: {
+//     labels: ['Happy', 'Sad', 'Angry', 'Surprised', 'Neutral'],
+//     datasets: [{
+//       label: 'Sentiment 1',
+//       data: [12, 19, 3, 5, 2],
+//       backgroundColor: 'rgba(54, 162, 235, 0.2)',
+//       borderColor: 'rgba(54, 162, 235, 1)',
+//       borderWidth: 2
+//     }]
+//   },
+//   options: {
+//     responsive: true,
+//     maintainAspectRatio: false,
+//     scales: {
+//       r: {
+//         beginAtZero: true,
+//         suggestedMin: 0,
+//         suggestedMax: 20,
+//         pointLabels: {
+//           font: {
+//             family: 'Poppins'
+//           },
+//         },
+//         ticks: {
+//           display: true,
+//           font: {
+//             size: 10,
+//             family: 'Poppins',
+//           }
+//         }
+//       }
+//     },
+//     plugins: {
+//       legend: {
+//         display: false // Disable legend for radar chart
+//       }
+//     }
+//   }
+// });
 
-// Radar Chart 2
-const radarCtx2 = document.getElementById('radarChart2').getContext('2d');
-const radarChart2 = new Chart(radarCtx2, {
-  type: 'radar',
-  data: {
-    labels: ['Happy', 'Sad', 'Angry', 'Surprised', 'Neutral'],
-    datasets: [{
-      label: 'Sentiment 2',
-      data: [7, 11, 6, 9, 4],
-      backgroundColor: 'rgba(255, 99, 132, 0.2)',
-      borderColor: 'rgba(255, 99, 132, 1)',
-      borderWidth: 2
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      r: {
-        beginAtZero: true,
-        suggestedMin: 0,
-        suggestedMax: 20
-      }
-    },
-    plugins: {
-      legend: {
-        display: false // Disable legend for radar chart
-      }
-    }
-  }
-});
+// // Radar Chart 2
+// const radarCtx2 = document.getElementById('radarChart2').getContext('2d');
+// const radarChart2 = new Chart(radarCtx2, {
+//   type: 'radar',
+//   data: {
+//     labels: ['Happy', 'Sad', 'Angry', 'Surprised', 'Neutral'],
+//     datasets: [{
+//       label: 'Sentiment 2',
+//       data: [7, 11, 6, 9, 4],
+//       backgroundColor: 'rgba(255, 99, 132, 0.2)',
+//       borderColor: 'rgba(255, 99, 132, 1)',
+//       borderWidth: 2
+//     }]
+//   },
+//   options: {
+//     responsive: true,
+//     maintainAspectRatio: false,
+//     scales: {
+//       r: {
+//         beginAtZero: true,
+//         suggestedMin: 0,
+//         suggestedMax: 20
+//       }
+//     },
+//     plugins: {
+//       legend: {
+//         display: false // Disable legend for radar chart
+//       }
+//     }
+//   }
+// });
 
 
 
