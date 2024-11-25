@@ -55,6 +55,7 @@ import plotly.io as pio
 # pip install transformers
 # pip install torch
 # pip install sentencepiece
+# pip install sacremoses
 
 from transformers import pipeline
 import torch
@@ -69,11 +70,18 @@ db = SQLAlchemy(app)
 socketio = SocketIO(app)
 
 # Initialize the emotion classification pipeline
-emotion = pipeline("text-classification", model="j-hartmann/emotion-english-distilroberta-base", return_all_scores=True)
+emotion = pipeline("text-classification", 
+                   model="j-hartmann/emotion-english-distilroberta-base", 
+                   return_all_scores=True, 
+                   truncation=True, 
+                   max_length=512)
 # Initialize the translation pipeline
 translator = pipeline("translation", model="Helsinki-NLP/opus-mt-bn-en")
 # Initialize the language detection pipeline
-detector = pipeline("text-classification", model="papluca/xlm-roberta-base-language-detection", truncation=True, max_length=512)
+detector = pipeline("text-classification", 
+                    model="papluca/xlm-roberta-base-language-detection", 
+                    truncation=True, 
+                    max_length=512)
 
 # -----------------------------
 # Database Models
@@ -99,7 +107,7 @@ class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(500), nullable=False)
+    description = db.Column(db.Text(500), nullable=False)
     caption = db.Column(db.String(200), nullable=True)
     image_filename = db.Column(db.String(100), nullable=True)
     timestamp = db.Column(db.DateTime, default=lambda: datetime.now())

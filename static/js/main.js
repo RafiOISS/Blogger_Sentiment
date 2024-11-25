@@ -11,17 +11,17 @@
 
 // Initialize socket connection
 const socket = io();
-const chatMessages = document.getElementById('chat-messages');
-const messageForm = document.getElementById('message-form');
-const messageInput = document.getElementById('message-input');
+const chatMessages = document.getElementById("chat-messages");
+const messageForm = document.getElementById("message-form");
+const messageInput = document.getElementById("message-input");
 
 // DOM Elements for Post Handling
 //const postDashboard = document.getElementById('post-dashboard');
-const postForm = document.getElementById('post-form');
-const postTitleInput = document.getElementById('title');
-const postDescriptionInput = document.getElementById('description');
-const postCaptionInput = document.getElementById('caption');
-const postImageInput = document.getElementById('fileElem');
+// const postForm = document.getElementById('post-form');
+const postTitleInput = document.getElementById("title");
+const postDescriptionInput = document.getElementById("description");
+const postCaptionInput = document.getElementById("caption");
+const postImageInput = document.getElementById("fileElem");
 
 // const post_Form = document.querySelector('form');
 
@@ -34,13 +34,13 @@ const postImageInput = document.getElementById('fileElem');
 
 // Helper function to format date and time
 function formatTimestamp(timestamp) {
-  return new Date(timestamp).toLocaleDateString('en-GB', {
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true
+  return new Date(timestamp).toLocaleDateString("en-GB", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
   });
 }
 
@@ -48,13 +48,13 @@ function formatTimestamp(timestamp) {
 function addMessageToChat(message) {
   //console.log('Received message:', message);
 
-  const isUser = message.sender === 'user'; // Check if the message is from the user or the bot
-  const messageContainer = document.createElement('div');
+  const isUser = message.sender === "user"; // Check if the message is from the user or the bot
+  const messageContainer = document.createElement("div");
   // messageContainer.classList.add('flex', 'items-start', 'space-x-2', isUser ? 'justify-end' : ''); // Adjust based on sender
-  messageContainer.classList.add('flex', 'items-start', 'space-x-2'); // Adjust based on sender
+  messageContainer.classList.add("flex", "items-start", "space-x-2"); // Adjust based on sender
 
   if (isUser) {
-    messageContainer.classList.add('justify-end');
+    messageContainer.classList.add("justify-end");
   }
 
   // const timestamp = new Date(message.timestamp).toLocaleString(); // Convert timestamp to readable format
@@ -72,25 +72,33 @@ function addMessageToChat(message) {
 
   // Message HTML
   messageContainer.innerHTML = `
-        ${isUser ? '' : `  <div class="w-9 h-9 text-slate-700 bg-pink-100 rounded-full flex items-center justify-center border">
+        ${
+          isUser
+            ? ""
+            : `  <div class="w-9 h-9 text-slate-700 bg-pink-100 rounded-full flex items-center justify-center border">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
 </svg>
 
           </div>
-`}
+`
+        }
         <div>
-            <p class="font-semibold text-sm text-slate-700 ${isUser ? 'text-right' : ''}">${isUser ? 'User' : 'Bot'}</p>
-            <p class="text-xs text-gray-500 ${isUser ? 'text-right' : ''}">${timestamp}</p>
-            <div class="${isUser ? 'bg-blue-100' : 'bg-gray-100'} p-3 text-slate-950 rounded-3xl max-w-xs">
+            <p class="font-semibold text-sm text-slate-700 ${isUser ? "text-right" : ""}">${isUser ? "User" : "Bot"}</p>
+            <p class="text-xs text-gray-500 ${isUser ? "text-right" : ""}">${timestamp}</p>
+            <div class="${isUser ? "bg-blue-100" : "bg-gray-100"} p-3 text-slate-950 rounded-3xl max-w-xs">
                 <p>${message.content}</p>
             </div>
         </div>
-        ${isUser ? `  <img
+        ${
+          isUser
+            ? `  <img
     src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1480&amp;q=80"
     alt="avatar"
     class="relative inline-block h-9 w-9 !rounded-full  object-cover object-center"
-  />` : ''}
+  />`
+            : ""
+        }
 
     `;
 
@@ -100,28 +108,27 @@ function addMessageToChat(message) {
 }
 
 // Load previous messages
-fetch('/messages')
-  .then(response => response.json())
-  .then(messages => {
+fetch("/messages")
+  .then((response) => response.json())
+  .then((messages) => {
     //console.log(messages);
     // chatMessages.innerHTML = '';
     messages.forEach(addMessageToChat);
   });
 
-socket.on('receive_message', function (data) {
+socket.on("receive_message", function (data) {
   addMessageToChat(data);
 });
 
-messageForm.addEventListener('submit', function (e) {
+messageForm.addEventListener("submit", function (e) {
   e.preventDefault();
   const message = messageInput.value.trim(); // Trim whitespace from the message
-  if (message) { // Only send if the message is not empty
-    socket.emit('send_message', { message: message });
-    messageInput.value = '';
+  if (message) {
+    // Only send if the message is not empty
+    socket.emit("send_message", { message: message });
+    messageInput.value = "";
   }
 });
-
-
 
 // Post Submission Form
 // document.getElementById('post-form').addEventListener('submit', async (e) => {
@@ -139,7 +146,6 @@ messageForm.addEventListener('submit', function (e) {
 //   };
 //   socket.emit('submit_post', postData);
 // });
-
 
 /// Function to render a single post in the UI
 function renderPost(post) {
@@ -211,21 +217,35 @@ function renderPost(post) {
             <p class="text-gray-600 italic">${post.caption}</p>
           </div>
           <!-- Post Image -->
-          ${post.image_url ? `<div class="w-full h-56 bg-gray-100 rounded-3xl">
-            <img src="${post.image_url}" alt="Post Image" class="h-full w-full object-contain rounded-lg"/>
-          </div>` : 
-          `<div class="w-full h-56 bg-gray-100 rounded-3xl flex justify-center items-center space-x-4 text-gray-500">
+          ${
+            post.image_url
+              ? `
+  <div class="w-full h-56 rounded-3xl relative overflow-hidden">
+    <!-- Blurred background layer -->
+    <div class="absolute inset-0 scale-110 bg-center bg-cover"
+         style="background-image: url('${post.image_url}'); filter: blur(20px) brightness(0.9);">
+    </div>
+    
+    <!-- Main image -->
+    <div class="relative h-full w-full flex items-center justify-center">
+      <img src="${post.image_url}" alt="Post Image" class="h-full w-full object-contain"/>
+    </div>
+  </div>
+`
+              : `<div class="w-full h-56 bg-gray-100 rounded-3xl flex justify-center items-center space-x-4 text-gray-500">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
           </svg>
           <p>No image in this post.</p>
-          </div>`}
+          </div>`
+          }
         </div>
-        <div class="w-1/2 h-full flex items-center justify-center">
+        <div class="w-1/2 h-full flex flex-col items-center justify-center">
           <canvas class="max-w-72 max-h-72" id="radarChart-${post.id}"></canvas>
+          <div class="text-gray-500 text-xs"><p>≈75% Accurate</p></div>
         </div>
       </div>
-      <p class="text-gray-700 mt-4 first-letter:text-7xl  first-letter:me-3 first-letter:float-start first-letter:font-pacifico first-letter:uppercase">${post.description}</p>
+      <p class="text-gray-700 whitespace-pre-wrap mt-4 first-letter:text-7xl  first-letter:me-3 first-letter:float-start first-letter:font-pacifico first-letter:uppercase">${post.description}</p>
       <div class="flex justify-end items-center space-x-4">
         
         <button class="rounded-full border border-transparent py-1 px-4 text-center text-sm transition-all text-blue-500 hover:bg-blue-100 flex items-center justify-center gap-2" type="button"
@@ -262,8 +282,8 @@ function renderPost(post) {
         </svg>Share</button>
       </div>
     </div>`;
-  
-  postDashboard.insertAdjacentHTML('afterbegin', postHtml);
+
+  postDashboard.insertAdjacentHTML("afterbegin", postHtml);
 
   // Render radar chart for the post
   renderRadarChart(post.id);
@@ -281,11 +301,11 @@ function renderPost(post) {
 // Fetch and load existing posts
 async function loadPosts() {
   try {
-    const response = await fetch('/get_posts');
+    const response = await fetch("/get_posts");
     const posts = await response.json();
 
     // Clear the current posts
-    postDashboard.innerHTML = '';
+    postDashboard.innerHTML = "";
 
     // Render each post dynamically
     posts.forEach(renderPost);
@@ -295,53 +315,61 @@ async function loadPosts() {
 }
 
 // Submit a new post
-async function submitPost(e) {
-  e.preventDefault();
+// async function submitPost(e) {
+//   e.preventDefault();
 
-  const formData = new FormData(postForm);
+//   const formData = new FormData(postForm);
 
-  try {
-    // Upload image (if provided)
-    const uploadResponse = await fetch('/upload_image', { method: 'POST', body: formData });
-    const uploadResult = await uploadResponse.json();
-    const postData = {
-      title: formData.get('title'),
-      description: formData.get('description'),
-      caption: formData.get('caption'),
-      image_filename: uploadResult.filename || null // Set filename if present
-    };
+//   // Add form fields to FormData
+//   formData.append('title', document.getElementById('title').value);
+//   formData.append('description', document.getElementById('description').value);
+//   formData.append('caption', document.getElementById('caption').value);
 
-    // Emit post data to the server
-    socket.emit('submit_post', postData);
+//   // Add the selected file if it exists
+//   if (selectedFile) {
+//       formData.append('image', selectedFile);
+//   }
 
-    // Reset form fields after submission
-    postTitleInput.value = '';
-    postDescriptionInput.value = '';
-    postCaptionInput.value = '';
-    postImageInput.value = '';
-    removeImage();
+//   try {
+//     // Upload image (if provided)
+//     const uploadResponse = await fetch('/upload_image', { method: 'POST', body: formData });
+//     const uploadResult = await uploadResponse.json();
 
-    // Check if required fields (title and description) are filled and then close the form
-    if (postData.title && postData.description) {  
-      document.getElementById('post-close-form').click();  // Trigger close button functionality
-    }
-  } catch (error) {
-    console.error("Failed to submit post:", error);
-  }
-}
+//     // Prepare post data
+//     const postData = {
+//       title: formData.get('title'),
+//       description: formData.get('description'),
+//       caption: formData.get('caption'),
+//       image_filename: uploadResult.filename || null // Set filename if present
+//     };
+
+//     // Emit post data to the server
+//     socket.emit('submit_post', postData);
+
+//     // Reset form fields after submission
+//     postForm.reset();
+//     removeImage();
+//     selectedFile = null;
+
+//     // Check if required fields (title and description) are filled and then close the form
+//     if (postData.title && postData.description) {
+//       document.getElementById('post-close-form').click();  // Trigger close button functionality
+//     }
+//   } catch (error) {
+//     console.error("Failed to submit post:", error);
+//   }
+// }
 
 // Listen for real-time post updates from the server
-socket.on('receive_post', function (post) {
+socket.on("receive_post", function (post) {
   renderPost(post);
 });
 
 // Load posts when the page loads
-document.addEventListener('DOMContentLoaded', loadPosts);
+document.addEventListener("DOMContentLoaded", loadPosts);
 
 // Submit post form event listener
-postForm.addEventListener('submit', submitPost);
-
-
+// postForm.addEventListener('submit', submitPost);
 
 // // Add an event listener to the form's submit event
 // post_Form.addEventListener('submit', (event) => {
@@ -362,46 +390,48 @@ function initDropdownMenu(postId) {
   }
 
   // Toggle dropdown visibility
-  menuButton.addEventListener('click', (event) => {
+  menuButton.addEventListener("click", (event) => {
     event.stopPropagation(); // Prevent immediate closing
-    const isExpanded = menuButton.getAttribute('aria-expanded') === 'true';
-    menuButton.setAttribute('aria-expanded', !isExpanded);
-    dropdownMenu.classList.toggle('hidden');
+    const isExpanded = menuButton.getAttribute("aria-expanded") === "true";
+    menuButton.setAttribute("aria-expanded", !isExpanded);
+    dropdownMenu.classList.toggle("hidden");
   });
 
   // Close dropdown when clicking outside
-  document.addEventListener('click', () => {
-    menuButton.setAttribute('aria-expanded', 'false');
-    dropdownMenu.classList.add('hidden');
+  document.addEventListener("click", () => {
+    menuButton.setAttribute("aria-expanded", "false");
+    dropdownMenu.classList.add("hidden");
   });
 }
 
 // Remove in dropdown menu
 function attachRemoveEvent(postId) {
-  const removeLink = document.querySelector(`.remove-link[data-id="${postId}"]`);
+  const removeLink = document.querySelector(
+    `.remove-link[data-id="${postId}"]`
+  );
 
   if (!removeLink) {
     console.error(`Remove link not found for post ${postId}`);
     return;
   }
 
-  removeLink.addEventListener('click', (event) => {
+  removeLink.addEventListener("click", (event) => {
     event.preventDefault();
 
     // Emit a socket message to remove the post
-    socket.emit('remove_post', { id: postId });
+    socket.emit("remove_post", { id: postId });
 
     // Optimistically remove the post from the DOM
     const postElement = document.getElementById(`post-${postId}`);
     if (postElement) {
-      postElement.classList.add('opacity-50'); // Reduce opacity to indicate removal in progress
+      postElement.classList.add("opacity-50"); // Reduce opacity to indicate removal in progress
     }
   });
 }
 
-function showNotification(message, type = 'success') {
-  const notification = document.createElement('div');
-  notification.className = `fixed top-4 right-4 bg-${type === 'success' ? 'green' : 'red'}-100 border border-${type === 'success' ? 'green' : 'red'}-400 text-${type === 'success' ? 'green' : 'red'}-700 px-4 py-2 rounded shadow`;
+function showNotification(message, type = "success") {
+  const notification = document.createElement("div");
+  notification.className = `fixed top-4 right-4 bg-${type === "success" ? "green" : "red"}-100 border border-${type === "success" ? "green" : "red"}-400 text-${type === "success" ? "green" : "red"}-700 px-4 py-2 rounded shadow`;
   notification.textContent = message;
 
   document.body.appendChild(notification);
@@ -411,17 +441,14 @@ function showNotification(message, type = 'success') {
   }, 3000); // Remove after 3 seconds
 }
 
-
 // Listen for the 'post_removed' event
-socket.on('post_removed', () => {
+socket.on("post_removed", () => {
   // Clear the current posts
-  postDashboard.innerHTML = '';
+  postDashboard.innerHTML = "";
 
   // Reload all posts dynamically
   loadPosts();
 });
-
-
 
 // Chart
 
@@ -432,20 +459,40 @@ async function renderRadarChart(postId) {
     const sentiment = await response.json();
 
     // Get the canvas for the radar chart
-    const ctx = document.getElementById(`radarChart-${postId}`).getContext('2d');
+    const ctx = document
+      .getElementById(`radarChart-${postId}`)
+      .getContext("2d");
 
     // Render the radar chart
     new Chart(ctx, {
-      type: 'radar',
+      type: "radar",
       data: {
-        labels: ['Surprise', 'Joy', 'Neutral', 'Sad', 'Disgust', 'Fear', 'Angry'],
-        datasets: [{
-          label: 'Sentiment Analysis',
-          data: [sentiment.surprised, sentiment.happy, sentiment.neutral, sentiment.sad, sentiment.disgust, sentiment.fear, sentiment.angry],
-          backgroundColor: 'rgba(54, 162, 235, 0.2)',
-          borderColor: 'rgba(54, 162, 235, 1)',
-          borderWidth: 2
-        }]
+        labels: [
+          "Surprise",
+          "Joy",
+          "Neutral",
+          "Sad",
+          "Disgust",
+          "Fear",
+          "Angry",
+        ],
+        datasets: [
+          {
+            label: "Sentiment Analysis",
+            data: [
+              sentiment.surprised,
+              sentiment.happy,
+              sentiment.neutral,
+              sentiment.sad,
+              sentiment.disgust,
+              sentiment.fear,
+              sentiment.angry,
+            ],
+            backgroundColor: "rgba(54, 162, 235, 0.2)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 2,
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -457,33 +504,29 @@ async function renderRadarChart(postId) {
             suggestedMax: 100,
             pointLabels: {
               font: {
-                family: 'Poppins'
+                family: "Poppins",
               },
             },
             ticks: {
               display: true,
               font: {
                 size: 10,
-                family: 'Poppins',
-              }
-            }
-          }
+                family: "Poppins",
+              },
+            },
+          },
         },
         plugins: {
           legend: {
-            display: false // Disable legend for radar chart
-          }
-        }
-      }
+            display: false, // Disable legend for radar chart
+          },
+        },
+      },
     });
   } catch (error) {
     console.error(`Failed to render radar chart for post ${postId}:`, error);
   }
 }
-
-
-
-
 
 // // Doughnut Chart
 // const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
@@ -604,12 +647,4 @@ async function renderRadarChart(postId) {
 //   }
 // });
 
-
-
-
-
-
 // Upload Image
-
-
-
