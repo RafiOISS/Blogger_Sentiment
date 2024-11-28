@@ -362,7 +362,13 @@ async function loadPosts() {
 
 // Listen for real-time post updates from the server
 socket.on("receive_post", function (post) {
+
+  hidePostLoadingSkeleton();
   renderPost(post);
+
+  // Re-enable submit button
+  //const submitButton = document.getElementById('submit-post-button');
+  //submitButton.disabled = false;
 });
 
 // Load posts when the page loads
