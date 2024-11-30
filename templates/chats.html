@@ -22,7 +22,8 @@
     <!-- <div class="w-2/6 bg-white shadow-md rounded-lg p-4 flex flex-col justify-between h-full mt-20"> -->
 
     <!-- Title Bar with Close Button -->
-    <div class="flex justify-between items-center shadow-md bg-blue-100 rounded-t-lg pl-4 z-30">
+    <div class="flex justify-between items-center shadow-md bg-blue-100/30 rounded-t-lg pl-4 z-30">
+    <!-- <div class="flex justify-between items-center shadow-lg bg-blue-100/30 backdrop-blur-sm rounded-t-lg pl-4 z-30 border border-blue-200/50"> -->
         <p class="text-sm text-blue-900 font-semibold">Chat Bot</p>
         <button id="chat-close" data-collapse-target="chat-column"
             class="text-pink-800 bg-pink-200 hover:bg-pink-300 rounded-tr-lg w-10 h-6 flex items-center justify-center">
@@ -47,8 +48,9 @@
 
     <!-- Chat Form (Fixed at Bottom of Chat Column) -->
     <form id="message-form" style="box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1)" class="flex space-x-2 p-4 z-30">
-        <input type="text" id="message-input" placeholder="Message with bot"
-            class="w-full px-6 py-3 bg-gray-100 rounded-3xl focus:outline-none placeholder-gray-500" />
+        <!-- <input type="text" id="message-input" placeholder="Message with bot"
+            class="w-full px-6 py-3 bg-gray-100 rounded-3xl focus:outline-none placeholder-gray-500" /> -->
+        <textarea id="message-input" placeholder="Message with bot" class="w-full px-6 py-3 bg-gray-100 rounded-3xl focus:outline-none placeholder-gray-500 resize-none hide-scrollbar" rows="1"></textarea>
         <!-- <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-full">Send</button> -->
 
         <button data-ripple-light="true"

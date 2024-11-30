@@ -25,13 +25,16 @@
 
     <!-- CSS reference -->
     <link href="{{ url_for('static', filename='css/output.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
 </head>
 
 <body class="bg-gray-100 h-screen flex flex-col font-poppins">
     <!-- Navbar -->
-    <nav class="bg-white w-full fixed top-0 left-0 shadow-md flex justify-between items-center z-50">
+    <!-- <nav class="bg-white w-full fixed top-0 left-0 shadow-md flex justify-between items-center z-50"> -->
+    <nav class="bg-white/30 backdrop-blur-md w-full fixed top-0 left-0 shadow-lg flex justify-between items-center z-50 border-b border-gray-200/50">
         <div class="flex items-center space-x-4 px-5">
             <button
+                id="navrail-slider"
                 class="rounded-full border border-transparent py-0.5 px-3 text-center text-sm transition-all text-gray-500 hover:bg-gray-100 focus:bg-blue-100 active:bg-blue-100 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                 type="button">
                 <!-- Slide Drawer Icon -->
@@ -45,7 +48,7 @@
             <!-- <div class="text-xl font-bold text-blue-500">BlogSen</div> -->
             <div
                 class="py-2 text-2xl font-bold font-pacifico bg-gradient-to-r from-indigo-500 via-rose-300 to-amber-300 bg-clip-text text-transparent">
-                BlogSen
+                EmoSpr
             </div>
 
             <!-- drop-shadow-[0_0.1px_0.1px_rgba(0,0,0,0.8)] -->
@@ -75,7 +78,7 @@
     <!-- Main Body -->
     <div class="flex-1 flex justify-start space-x-4 overflow-y-hidden">
         <!-- Navigation Rail Column (1st Column) -->
-        <div class="w-20 bg-white shadow-md h-full flex flex-col justify-between items-center pt-28 py-8">
+        <div id="navigation-rail" class="w-20 bg-white shadow-md h-full flex flex-col justify-between items-center pt-28 py-8 hidden">
             <!-- Navigation Rail Links -->
             <ul class="space-y-6 flex flex-col items-center w-full text-gray-500">
                 <!-- Home Link with Icon -->

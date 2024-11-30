@@ -87,7 +87,7 @@ function addMessageToChat(message) {
             <p class="font-semibold text-sm text-slate-700 ${isUser ? "text-right" : ""}">${isUser ? "User" : "Bot"}</p>
             <p class="text-xs text-gray-500 ${isUser ? "text-right" : ""}">${timestamp}</p>
             <div class="${isUser ? "bg-blue-100" : "bg-gray-100"} p-3 text-slate-950 rounded-3xl max-w-xs">
-                <p>${message.content}</p>
+                <p class="whitespace-pre-wrap">${message.content}</p>
             </div>
         </div>
         ${
@@ -104,7 +104,13 @@ function addMessageToChat(message) {
 
   // Append the message container to the chat messages
   chatMessages.appendChild(messageContainer);
-  chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll to the bottom
+  // chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll to the bottom
+
+  // Smooth auto-scroll to the bottom
+  chatMessages.scrollTo({
+    top: chatMessages.scrollHeight,
+    behavior: 'smooth'
+  });
 }
 
 // Load previous messages
@@ -122,11 +128,25 @@ socket.on("receive_message", function (data) {
 
 messageForm.addEventListener("submit", function (e) {
   e.preventDefault();
-  const message = messageInput.value.trim(); // Trim whitespace from the message
-  if (message) {
+  const message = messageInput.value; // Trim whitespace from the message
+  if (message.trim()) {
     // Only send if the message is not empty
     socket.emit("send_message", { message: message });
     messageInput.value = "";
+  }
+});
+
+messageInput.addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault(); // Prevent default Enter behavior
+    messageForm.dispatchEvent(new Event("submit"));
+  } else if (e.key === "Enter" && e.shiftKey) {
+    e.preventDefault(); // Prevent default Enter behavior
+    const start = this.selectionStart;
+    const end = this.selectionEnd;
+    this.value = this.value.substring(0, start) + "\n" + this.value.substring(end);
+    this.selectionStart = this.selectionStart + 1;
+    this.selectionEnd = this.selectionStart;
   }
 });
 
@@ -241,8 +261,8 @@ function renderPost(post) {
           }
         </div>
         <div class="w-1/2 h-full flex flex-col items-center justify-center">
-          <canvas class="max-w-72 max-h-72" id="radarChart-${post.id}"></canvas>
-          <div class="text-gray-500 text-xs"><p>≈75% Accurate</p></div>
+          <canvas class=" max-h-72" id="radarChart-${post.id}"></canvas>
+          <!-- <div class="text-gray-500 text-xs"><p>≈75% Accurate</p></div> -->
         </div>
       </div>
       <p class="text-gray-700 whitespace-pre-wrap mt-4 first-letter:text-7xl  first-letter:me-3 first-letter:float-start first-letter:font-pacifico first-letter:uppercase">${post.description}</p>
@@ -292,7 +312,12 @@ function renderPost(post) {
   initDropdownMenu(post.id);
 
   // Auto-scroll to the top after adding a new post
-  postDashboard.scrollTop = 0;
+  // postDashboard.scrollTop = 0;
+
+  postDashboard.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 
   // Attach click event listener to remove link
   attachRemoveEvent(post.id);
@@ -367,8 +392,9 @@ socket.on("receive_post", function (post) {
   renderPost(post);
 
   // Re-enable submit button
-  //const submitButton = document.getElementById('submit-post-button');
-  //submitButton.disabled = false;
+  // const submitButton = document.getElementById('submit-post-button');
+  submitButton.disabled = false;
+  console.log("socket.on(\"receive_post\", function (post) {submitButton.disabled = false;}");
 });
 
 // Load posts when the page loads
@@ -437,7 +463,7 @@ function attachRemoveEvent(postId) {
 
 function showNotification(message, type = "success") {
   const notification = document.createElement("div");
-  notification.className = `fixed top-4 right-4 bg-${type === "success" ? "green" : "red"}-100 border border-${type === "success" ? "green" : "red"}-400 text-${type === "success" ? "green" : "red"}-700 px-4 py-2 rounded shadow`;
+  notification.className = `fixed top-20 right-20 bg-${type === "success" ? "green" : "red"}-100 border border-${type === "success" ? "green" : "red"}-400 text-${type === "success" ? "green" : "red"}-700 px-4 py-2 rounded shadow`;
   notification.textContent = message;
 
   document.body.appendChild(notification);
@@ -474,17 +500,17 @@ async function renderRadarChart(postId) {
       type: "radar",
       data: {
         labels: [
-          "Surprise",
-          "Joy",
-          "Neutral",
-          "Sad",
-          "Disgust",
-          "Fear",
-          "Angry",
+          "Surprise 😲",
+          "😄 Joy",
+          "😐 Neutral",
+          "😢 Sad",
+          "Disgust 🤢",
+          "Fear 😱",
+          "Angry 😡",
         ],
         datasets: [
           {
-            label: "Sentiment Analysis",
+            label: "≈ 75% Accuracy",
             data: [
               sentiment.surprised,
               sentiment.happy,
@@ -511,6 +537,7 @@ async function renderRadarChart(postId) {
             pointLabels: {
               font: {
                 family: "Poppins",
+                size: 16,
               },
             },
             ticks: {
@@ -524,7 +551,7 @@ async function renderRadarChart(postId) {
         },
         plugins: {
           legend: {
-            display: false, // Disable legend for radar chart
+            display: true, // Disable legend for radar chart
           },
         },
       },

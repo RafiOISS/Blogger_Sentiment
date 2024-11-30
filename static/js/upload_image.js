@@ -8,6 +8,7 @@ let imageNameElement = document.getElementById("image-name");
 let uploadInstruction = document.getElementById("upload-instruction");
 const removeButton = document.getElementById("remove-button");
 const postForm = document.getElementById("post-form");
+const submitButton = document.getElementById('submit-post-button');
 
 // Global variable to store the selected file
 let selectedFile = null;
@@ -119,8 +120,9 @@ async function submitPost(e) {
   e.preventDefault();
 
   // Disable the submit button and show loading state
-  //const submitButton = document.getElementById('submit-post-button');
-  //submitButton.disabled = true;
+  // const submitButton = document.getElementById('submit-post-button');
+  submitButton.disabled = true;
+  console.log("async function submitPost(e) { {submitButton.disabled = true;}");
 
   // Show loading skeleton
   showPostLoadingSkeleton();
@@ -167,6 +169,7 @@ async function submitPost(e) {
     // Close form if required fields are filled
     if (postData.title && postData.description) {
       document.getElementById("post-close-form").click();
+      postDashboard.scrollTop = 0;
     }
   } catch (error) {
     console.error("Failed to submit post:", error);

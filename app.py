@@ -90,7 +90,7 @@ detector = pipeline("text-classification",
 # Message Model
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.String(500), nullable=False)
+    content = db.Column(db.Text(500), nullable=False)
     sender = db.Column(db.String(50), nullable=False)
     timestamp = db.Column(db.DateTime, default=lambda: datetime.now())
 
