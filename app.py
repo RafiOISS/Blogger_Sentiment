@@ -6,6 +6,7 @@
 # https://huggingface.co/j-hartmann/emotion-english-distilroberta-base?text=Wow%2C+congratulations%21+So+excited+for+you%21
 # https://huggingface.co/Helsinki-NLP/opus-mt-bn-en
 # https://huggingface.co/papluca/xlm-roberta-base-language-detection
+# https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct
 
 
 # Create a virtual environment named venv
@@ -37,7 +38,7 @@
 # pip install flask-socketio
 # pip install Flask-SQLAlchemy
 
-from flask import Flask, render_template, request, jsonify, url_for
+from flask import Flask, render_template, request, jsonify, url_for, current_app
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -57,7 +58,10 @@ import plotly.io as pio
 # pip install sentencepiece
 # pip install sacremoses
 
-from transformers import pipeline
+# pip install accelerate>=0.26.0
+
+
+from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
 import torch
 
 app = Flask(__name__)
@@ -82,6 +86,25 @@ detector = pipeline("text-classification",
                     model="papluca/xlm-roberta-base-language-detection", 
                     truncation=True, 
                     max_length=512)
+
+# Loading the chat model
+model_name = "Qwen/Qwen2.5-1.5B-Instruct"
+
+model = AutoModelForCausalLM.from_pretrained(
+    model_name,
+    torch_dtype="auto",
+    device_map="auto"
+)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+# Global variables
+accessDescription = ""  # Initialize accessDescription at the global level
+
+
+conversation= [
+    {"role": "system", "content": "You are EmoBot, created by EmotionSphere. You are a helpful assistant."},
+]
+
 
 # -----------------------------
 # Database Models
@@ -142,6 +165,16 @@ class Sentiment(db.Model):
 
 @app.route('/')
 def home():
+    global accessDescription
+    global conversation
+    
+    latest_post = Post.query.order_by(Post.timestamp.desc()).first()
+    accessDescription = latest_post.description
+    add_context_message(accessDescription)
+    
+    print(conversation)
+    current_app.logger.debug("This is a debug message")
+    
     return render_template('home.html')
 
 @app.route('/messages')
@@ -152,6 +185,7 @@ def get_messages():
 
 @socketio.on('send_message')
 def handle_message(data):
+    global accessDescription  # Declare the global variable
     message_content = data.get('message', '').strip()
     # If the user sends a message, process and save it
     if message_content:
@@ -163,12 +197,69 @@ def handle_message(data):
         emit('receive_message', user_message.to_dict(), broadcast=True)
 
         # After the user message, send a bot response
-        bot_message_content = "This is a fixed bot response."  # Fixed bot response text
+        bot_message_content = chat_with_bot(message_content)
+        # bot_message_content = "This is a fixed bot response."  # Fixed bot response text
+        # bot_message_content = result["answer"]  # Fixed bot response text
+
         bot_message = Message(content=bot_message_content, sender='bot')
         db.session.add(bot_message)
         db.session.commit()
         # Broadcast bot message
         emit('receive_message', bot_message.to_dict(), broadcast=True)
+
+# Function to generate bot response
+def get_model_response(messages):
+    try:
+        # Convert messages to a chat template
+        text = tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True
+        )
+
+        # Tokenize the input
+        model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+
+        # Generate response
+        generated_ids = model.generate(
+            **model_inputs,
+            max_new_tokens=512
+        )
+
+        # Decode the response (removing the input prompt)
+        generated_ids = generated_ids[0][len(model_inputs.input_ids[0]):]
+        response = tokenizer.decode(generated_ids, skip_special_tokens=True)
+
+        return response
+    except Exception as e:
+        return f"An error occurred: {str(e)}"
+        
+# Function to add a new system message
+def add_context_message(new_context_content):
+    global conversation
+    # Remove any existing system messages
+    conversation = [{"role": "system", "content": "You are EmoBot, created by EmotionSphere. You are a helpful assistant."},
+                    {"role": "user", "content": f"The post/description/context:\n{new_context_content}"},]
+
+    print(f"Context message updated to: {new_context_content}")
+    
+def chat_with_bot(user_input):
+    global conversation
+    
+    # Add user message to conversation
+    conversation.append({"role": "user", "content": user_input})
+    
+    # Get model response
+    model_response = get_model_response(conversation)
+    
+    # Add model response to conversation
+    conversation.append({"role": "assistant", "content": model_response})
+    
+    # return model_response
+    # print(model_response)
+    return model_response
+    
+
 
 # -----------------------------
 # Routes for Posts
@@ -182,6 +273,8 @@ def get_posts():
 
 @socketio.on('submit_post')
 def handle_post_submission(data):
+    global accessDescription  # Declare the global variable
+    
     title = data.get('title')
     description = data.get('description')
     caption = data.get('caption', '')
@@ -190,6 +283,11 @@ def handle_post_submission(data):
     if title and description:
         # Step 1: Create and store the new post
         new_post = Post(title=title, description=description, caption=caption, image_filename=image_filename)
+        
+        # Update the global variable with the description
+        accessDescription = description  # Set the global variable
+        add_context_message(accessDescription)
+        
         db.session.add(new_post)
         db.session.commit()  # Commit to get the new post ID
         
@@ -268,6 +366,8 @@ def get_sentiment_data():
 
 @socketio.on('remove_post')
 def handle_remove_post(data):
+    global accessDescription
+    
     post_id = data.get('id')
 
     if not post_id:
@@ -283,6 +383,10 @@ def handle_remove_post(data):
 
         db.session.commit()
 
+    latest_post = Post.query.order_by(Post.timestamp.desc()).first()
+    accessDescription = latest_post.description
+    add_context_message(accessDescription)
+    
     # Broadcast the post removal to other clients
     emit('post_removed', {}, broadcast=True)
 
@@ -296,6 +400,7 @@ def account():
 
 @app.route('/settings')
 def settings():
+    current_app.logger.debug("This is a debug message")
     return render_template('settings.html')
 
 # -----------------------------
