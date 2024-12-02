@@ -46,12 +46,13 @@ from werkzeug.utils import secure_filename
 import os
 
 import random
+import time
 
 # pip install plotly
 # pip install kaleido
 
-import plotly.graph_objects as go
-import plotly.io as pio
+# import plotly.graph_objects as go
+# import plotly.io as pio
 
 # pip install transformers
 # pip install torch
@@ -73,19 +74,33 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 socketio = SocketIO(app)
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(device)
+isCuda = 0 if torch.cuda.is_available() else -1  # Use 0 for GPU or -1 for CPU
+
+print("PyTorch version:", torch.__version__)
+print("CUDA available:", torch.cuda.is_available())
+if torch.cuda.is_available():
+    print("CUDA version:", torch.version.cuda)
+    print("Device name:", torch.cuda.get_device_name(0))
+else:
+    print("No CUDA device detected.")
+
 # Initialize the emotion classification pipeline
 emotion = pipeline("text-classification", 
                    model="j-hartmann/emotion-english-distilroberta-base", 
                    return_all_scores=True, 
                    truncation=True, 
-                   max_length=512)
+                   max_length=512,
+                   device=isCuda)
 # Initialize the translation pipeline
-translator = pipeline("translation", model="Helsinki-NLP/opus-mt-bn-en")
+translator = pipeline("translation", model="Helsinki-NLP/opus-mt-bn-en", device=isCuda)
 # Initialize the language detection pipeline
 detector = pipeline("text-classification", 
                     model="papluca/xlm-roberta-base-language-detection", 
                     truncation=True, 
-                    max_length=512)
+                    max_length=512,
+                    device=isCuda)
 
 # Loading the chat model
 model_name = "Qwen/Qwen2.5-1.5B-Instruct"
@@ -93,7 +108,7 @@ model_name = "Qwen/Qwen2.5-1.5B-Instruct"
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
     torch_dtype="auto",
-    device_map="auto"
+    device_map="auto",
 )
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 
@@ -104,6 +119,7 @@ accessDescription = ""  # Initialize accessDescription at the global level
 conversation= [
     {"role": "system", "content": "You are EmoBot, created by EmotionSphere. You are a helpful assistant."},
 ]
+
 
 
 # -----------------------------
@@ -165,16 +181,6 @@ class Sentiment(db.Model):
 
 @app.route('/')
 def home():
-    global accessDescription
-    global conversation
-    
-    latest_post = Post.query.order_by(Post.timestamp.desc()).first()
-    accessDescription = latest_post.description
-    add_context_message(accessDescription)
-    
-    print(conversation)
-    current_app.logger.debug("This is a debug message")
-    
     return render_template('home.html')
 
 @app.route('/messages')
@@ -218,7 +224,8 @@ def get_model_response(messages):
         )
 
         # Tokenize the input
-        model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+        # model_inputs = tokenizer([text], return_tensors="pt").to(model.device)
+        model_inputs = tokenizer([text], return_tensors="pt").to(device)
 
         # Generate response
         generated_ids = model.generate(
@@ -287,6 +294,7 @@ def handle_post_submission(data):
         # Update the global variable with the description
         accessDescription = description  # Set the global variable
         add_context_message(accessDescription)
+        print(conversation)
         
         db.session.add(new_post)
         db.session.commit()  # Commit to get the new post ID
@@ -304,18 +312,6 @@ def handle_post_submission(data):
             emo_results = emotion(translate[0]['translation_text'])
         else:
             emo_results = emotion(new_post.description)
-        
-        # Step 2: Generate random sentiment data for the post
-        # sentiment_data = Sentiment(
-        #     post_id=new_post.id,
-        #     happy=random.randint(0, 20),
-        #     sad=random.randint(0, 20),
-        #     angry=random.randint(0, 20),
-        #     surprised=random.randint(0, 20),
-        #     neutral=random.randint(0, 20),
-        #     fear=random.randint(0, 20),
-        #     disgust=random.randint(0, 20)
-        # )
         
         sentiment_data = Sentiment(
             post_id=new_post.id,
@@ -386,6 +382,7 @@ def handle_remove_post(data):
     latest_post = Post.query.order_by(Post.timestamp.desc()).first()
     accessDescription = latest_post.description
     add_context_message(accessDescription)
+    print(conversation)
     
     # Broadcast the post removal to other clients
     emit('post_removed', {}, broadcast=True)
@@ -410,4 +407,18 @@ def settings():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+
+        # Initialize accessDescription and conversation
+        latest_post = Post.query.order_by(Post.timestamp.desc()).first()
+        
+        if latest_post:  # Check if there are any posts in the database
+            accessDescription = latest_post.description
+            add_context_message(accessDescription)
+        else:
+            accessDescription = ""  # Default value if no posts exist
+
+        print("Initialization complete.")
+        print(f"accessDescription: {accessDescription}")
+        print(f"conversation: {conversation}")
+
     socketio.run(app, debug=True, host='0.0.0.0')

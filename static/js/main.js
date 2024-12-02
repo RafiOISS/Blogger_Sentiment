@@ -57,17 +57,6 @@ function addMessageToChat(message) {
     messageContainer.classList.add("justify-end");
   }
 
-  // const timestamp = new Date(message.timestamp).toLocaleString(); // Convert timestamp to readable format
-
-  // const timestamp = new Date(message.timestamp).toLocaleDateString('en-GB', {
-  //   year: 'numeric',
-  //   month: 'numeric',
-  //   day: 'numeric',
-  //   hour: '2-digit',
-  //   minute: '2-digit',
-  //   hour12: true
-  // });
-
   const timestamp = formatTimestamp(message.timestamp);
 
   // Message HTML
@@ -122,19 +111,76 @@ fetch("/messages")
     messages.forEach(addMessageToChat);
   });
 
+// socket.on("receive_message", function (data) {
+//   addMessageToChat(data);
+// });
+
+// Modify the receive message handler
+// socket.on("receive_message", function (data) {
+//   console.log(data)
+
+//   // setTimeout(() => {
+//   // Remove loading indicator if exists
+//   const loadingIndicator = document.querySelector('.loading-indicator');
+//   if (loadingIndicator) {
+//     loadingIndicator.remove();
+//   }
+  
+//   // Add the received message
+//   addMessageToChat(data);
+// // }, 2000); // Delay of 2 seconds (2000 milliseconds)
+// });
+
+// Updated socket message receiver
 socket.on("receive_message", function (data) {
-  addMessageToChat(data);
+  const loadingIndicator = document.querySelector('.loading-indicator');
+  // Check the type of message
+  if (data.sender === 'user') {
+    // Immediately render user message
+    addMessageToChat(data);
+    
+    // Optionally, you can add a loading indicator for bot response
+    addLoadingIndicator();
+  } 
+  else if (data.sender === 'bot') {
+    // Remove loading indicator
+    // const loadingIndicator = document.querySelector('.loading-indicator');
+    if (loadingIndicator) {
+      loadingIndicator.remove();
+    }
+    // Render bot message
+    addMessageToChat(data);
+  }
 });
 
+
+// messageForm.addEventListener("submit", function (e) {
+//   e.preventDefault();
+//   const message = messageInput.value; // Trim whitespace from the message
+//   if (message.trim()) {
+//     // Only send if the message is not empty
+//     socket.emit("send_message", { message: message });
+//     messageInput.value = "";
+//   }
+// });
+
+// Modify the message submission listener
 messageForm.addEventListener("submit", function (e) {
   e.preventDefault();
-  const message = messageInput.value; // Trim whitespace from the message
+  
+  const message = messageInput.value;
   if (message.trim()) {
-    // Only send if the message is not empty
+    // Send user message
     socket.emit("send_message", { message: message });
+    
+    // Create loading indicator for bot response
+    //addLoadingIndicator();
+    
+    // Clear input
     messageInput.value = "";
   }
 });
+
 
 messageInput.addEventListener("keydown", function(e) {
   if (e.key === "Enter" && !e.shiftKey) {
@@ -150,22 +196,67 @@ messageInput.addEventListener("keydown", function(e) {
   }
 });
 
-// Post Submission Form
-// document.getElementById('post-form').addEventListener('submit', async (e) => {
-//   e.preventDefault();
-//   const formData = new FormData(e.target);
 
-//   const response = await fetch('/upload_image', { method: 'POST', body: formData });
-//   const result = await response.json();
 
-//   const postData = {
-//     title: formData.get('title'),
-//     description: formData.get('description'),
-//     caption: formData.get('caption'),
-//     image_filename: result.filename || null
-//   };
-//   socket.emit('submit_post', postData);
-// });
+
+function addLoadingIndicator() {
+  const chatMessages = document.getElementById('chat-messages');
+  const loadingContainer = document.createElement("div");
+  loadingContainer.classList.add("flex", "items-start", "space-x-2", "loading-indicator");
+
+  loadingContainer.innerHTML = `
+    <div class="w-9 h-9 text-slate-700 bg-pink-100 rounded-full flex items-center justify-center border">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m6.75 7.5 3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0 0 21 18V6a2.25 2.25 0 0 0-2.25-2.25H5.25A2.25 2.25 0 0 0 3 6v12a2.25 2.25 0 0 0 2.25 2.25Z" />
+      </svg>
+    </div>
+    <div>
+      <p class="font-semibold text-sm text-slate-700">Bot</p>
+      <p class="text-xs text-gray-500">Typing</p>
+      <div class="bg-gray-100 p-3 text-slate-950 rounded-3xl max-w-xs flex items-center space-x-2">
+        <div class="loading-dot w-2 h-2 bg-slate-500 rounded-full"></div>
+        <div class="loading-dot w-2 h-2 bg-slate-500 rounded-full"></div>
+        <div class="loading-dot w-2 h-2 bg-slate-500 rounded-full"></div>
+      </div>
+    </div>
+  `;
+
+  chatMessages.appendChild(loadingContainer);
+  
+  // Smooth auto-scroll to the bottom
+  chatMessages.scrollTo({
+    top: chatMessages.scrollHeight,
+    behavior: 'smooth'
+  });
+
+  // Add loading animation
+  const dots = loadingContainer.querySelectorAll('.loading-dot');
+  dots.forEach((dot, index) => {
+    dot.style.animationDelay = `${index * 0.2}s`;
+  });
+}
+
+// Add this CSS to your Tailwind configuration or inline styles
+const loadingStyles = `
+<style>
+@keyframes loading-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.loading-dot {
+  animation: loading-pulse 1.4s ease-in-out infinite;
+}
+</style>
+`;
+document.head.insertAdjacentHTML('beforeend', loadingStyles);
+
+
+
+
+
+
+
 
 /// Function to render a single post in the UI
 function renderPost(post) {
@@ -339,51 +430,6 @@ async function loadPosts() {
   }
 }
 
-// Submit a new post
-// async function submitPost(e) {
-//   e.preventDefault();
-
-//   const formData = new FormData(postForm);
-
-//   // Add form fields to FormData
-//   formData.append('title', document.getElementById('title').value);
-//   formData.append('description', document.getElementById('description').value);
-//   formData.append('caption', document.getElementById('caption').value);
-
-//   // Add the selected file if it exists
-//   if (selectedFile) {
-//       formData.append('image', selectedFile);
-//   }
-
-//   try {
-//     // Upload image (if provided)
-//     const uploadResponse = await fetch('/upload_image', { method: 'POST', body: formData });
-//     const uploadResult = await uploadResponse.json();
-
-//     // Prepare post data
-//     const postData = {
-//       title: formData.get('title'),
-//       description: formData.get('description'),
-//       caption: formData.get('caption'),
-//       image_filename: uploadResult.filename || null // Set filename if present
-//     };
-
-//     // Emit post data to the server
-//     socket.emit('submit_post', postData);
-
-//     // Reset form fields after submission
-//     postForm.reset();
-//     removeImage();
-//     selectedFile = null;
-
-//     // Check if required fields (title and description) are filled and then close the form
-//     if (postData.title && postData.description) {
-//       document.getElementById('post-close-form').click();  // Trigger close button functionality
-//     }
-//   } catch (error) {
-//     console.error("Failed to submit post:", error);
-//   }
-// }
 
 // Listen for real-time post updates from the server
 socket.on("receive_post", function (post) {
@@ -400,16 +446,6 @@ socket.on("receive_post", function (post) {
 // Load posts when the page loads
 document.addEventListener("DOMContentLoaded", loadPosts);
 
-// Submit post form event listener
-// postForm.addEventListener('submit', submitPost);
-
-// // Add an event listener to the form's submit event
-// post_Form.addEventListener('submit', (event) => {
-//   event.preventDefault();  // Prevents the form from submitting and refreshing the page
-
-//   // You can add your form submission logic here (e.g., sending data via AJAX)
-//   console.log("Form submitted!");
-// });
 
 // Dropdown menu
 function initDropdownMenu(postId) {
@@ -561,123 +597,3 @@ async function renderRadarChart(postId) {
   }
 }
 
-// // Doughnut Chart
-// const doughnutCtx = document.getElementById('doughnutChart').getContext('2d');
-// const doughnutChart = new Chart(doughnutCtx, {
-//   type: 'doughnut',
-//   data: {
-//     labels: ['Happy', 'Sad', 'Angry', 'Surprised', 'Neutral'], // Labels for the doughnut chart
-//     datasets: [{
-//       data: [10, 15, 5, 8, 12], // Example data
-//       backgroundColor: [
-//         'rgba(75, 192, 192, 0.7)',
-//         'rgba(255, 99, 132, 0.7)',
-//         'rgba(255, 206, 86, 0.7)',
-//         'rgba(153, 102, 255, 0.7)',
-//         'rgba(255, 159, 64, 0.7)'
-//       ],
-//       borderColor: [
-//         'rgba(75, 192, 192, 1)',
-//         'rgba(255, 99, 132, 1)',
-//         'rgba(255, 206, 86, 1)',
-//         'rgba(153, 102, 255, 1)',
-//         'rgba(255, 159, 64, 1)'
-//       ],
-//       borderWidth: 1
-//     }]
-//   },
-//   options: {
-//     responsive: true,
-//     maintainAspectRatio: false,
-//     cutout: '80%',
-//     plugins: {
-//       legend: {
-//         display: true, // Enable legend for the doughnut chart
-//         position: 'left',
-//         labels: {
-//           boxWidth: 15, // Set box width for square-shaped legend boxes
-//           //   padding: 20
-//         }
-//       }
-//     }
-//   },
-
-// });
-
-// // Radar Chart 1
-// const radarCtx1 = document.getElementById('radarChart1').getContext('2d');
-// const radarChart1 = new Chart(radarCtx1, {
-//   type: 'radar',
-//   data: {
-//     labels: ['Happy', 'Sad', 'Angry', 'Surprised', 'Neutral'],
-//     datasets: [{
-//       label: 'Sentiment 1',
-//       data: [12, 19, 3, 5, 2],
-//       backgroundColor: 'rgba(54, 162, 235, 0.2)',
-//       borderColor: 'rgba(54, 162, 235, 1)',
-//       borderWidth: 2
-//     }]
-//   },
-//   options: {
-//     responsive: true,
-//     maintainAspectRatio: false,
-//     scales: {
-//       r: {
-//         beginAtZero: true,
-//         suggestedMin: 0,
-//         suggestedMax: 20,
-//         pointLabels: {
-//           font: {
-//             family: 'Poppins'
-//           },
-//         },
-//         ticks: {
-//           display: true,
-//           font: {
-//             size: 10,
-//             family: 'Poppins',
-//           }
-//         }
-//       }
-//     },
-//     plugins: {
-//       legend: {
-//         display: false // Disable legend for radar chart
-//       }
-//     }
-//   }
-// });
-
-// // Radar Chart 2
-// const radarCtx2 = document.getElementById('radarChart2').getContext('2d');
-// const radarChart2 = new Chart(radarCtx2, {
-//   type: 'radar',
-//   data: {
-//     labels: ['Happy', 'Sad', 'Angry', 'Surprised', 'Neutral'],
-//     datasets: [{
-//       label: 'Sentiment 2',
-//       data: [7, 11, 6, 9, 4],
-//       backgroundColor: 'rgba(255, 99, 132, 0.2)',
-//       borderColor: 'rgba(255, 99, 132, 1)',
-//       borderWidth: 2
-//     }]
-//   },
-//   options: {
-//     responsive: true,
-//     maintainAspectRatio: false,
-//     scales: {
-//       r: {
-//         beginAtZero: true,
-//         suggestedMin: 0,
-//         suggestedMax: 20
-//       }
-//     },
-//     plugins: {
-//       legend: {
-//         display: false // Disable legend for radar chart
-//       }
-//     }
-//   }
-// });
-
-// Upload Image
